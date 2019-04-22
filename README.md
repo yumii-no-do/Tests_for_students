@@ -4,4 +4,10 @@ Link to sites:
 * [admin (login:admin@gmail.com, password:admin1212)](http://stolla-admin.sorei.ru)
 * [tests](http://stolla-testing.sorei.ru)
 
+### Tests example
 ![screenshot of sample](meta/test_1.png)
+![screenshot of sample](meta/test_2.png)
+![screenshot of sample](meta/test_3.png)
+
+### Admin example
+![screenshot of sample](meta/admin_1.png)
