@@ -22,8 +22,6 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import MoreVert from '@material-ui/icons/MoreVert';
 import FormHelperText from '@material-ui/core/FormHelperText';
 
-
-
 const styles = theme => ({
     margin: {
         margin: theme.spacing.unit,
@@ -65,6 +63,8 @@ const styles = theme => ({
         alignItems: 'center'
     }
 });
+
+
 class Settings extends React.Component {
     state = {
         mark: '',
@@ -97,7 +97,6 @@ class Settings extends React.Component {
             })
         }
     }
-
     handleChange = name => event => {
         this.setState({ [name]: event.target.value });
     };
@@ -411,9 +410,7 @@ class Settings extends React.Component {
                             handelData={this.handelCreateTheme}
                             groups={this.state.groups.list}
                         /> : null
-
                     }
-
                     {console.log(this.state.groups)}
                     <CreateQuestion
                         open={this.state.isOpenCreateQuestion}
@@ -423,9 +420,7 @@ class Settings extends React.Component {
                 </div >
         );
     }
-
 }
-
 
 function mapStateToProps(state) {
     return {
@@ -434,5 +429,4 @@ function mapStateToProps(state) {
         groups: state.groups,
     };
 }
-
 export default connect(mapStateToProps, { getGroups, getUser, getThemes, updateTheme, createTheme })(withStyles(styles)(Settings))

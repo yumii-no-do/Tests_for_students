@@ -22,13 +22,14 @@ const styles = theme => ({
     },
 });
 
+
 class Login extends React.Component {
     state = {
         email: '',
         password: '',
         errorEmail: false,
         errorPassword: false,
-        errorAll:false,
+        errorAll: false,
         error: false,
     }
     componentWillMount() {
@@ -42,32 +43,29 @@ class Login extends React.Component {
             this.props.history.push('/');
         }
     }
-
     isValide() {
         const { email, password } = this.state;
         this.setState({
             errorEmail: (email === '') ? 'Введите email' : false,
             errorPassword: (password === '') ? 'Введите пароль' : false,
-            errorAll: (email !== '' &&  password !== '' ) ? false : true,
-        
+            errorAll: (email !== '' && password !== '') ? false : true,
+
         })
     }
-
-
     submitLogin = (event) => {
         event.preventDefault();
         this.isValide();
-        
-        if(this.state.errorAll===false){
+
+        if (this.state.errorAll === false) {
             this.props.login(this.state.email, this.state.password).catch(err => {
                 console.log(err);
                 let error = {};
                 switch (err.code) {
-                    case "auth/invalid-email":error={error:'Не верный формат email'};break;
-                    case "auth/user-not-found":error={error:'Нет записи пользователя, соответствующей этому идентификатору. Возможно, пользователь был удален.'};break;
-                    case "auth/wrong-password":error={error:'Не верный пароль'};break;
-                
-                    default:error= {error:false}; break;
+                    case "auth/invalid-email": error = { error: 'Не верный формат email' }; break;
+                    case "auth/user-not-found": error = { error: 'Нет записи пользователя, соответствующей этому идентификатору. Возможно, пользователь был удален.' }; break;
+                    case "auth/wrong-password": error = { error: 'Не верный пароль' }; break;
+
+                    default: error = { error: false }; break;
                 }
                 this.setState(error);
             });
@@ -118,33 +116,25 @@ class Login extends React.Component {
                                         onChange={this.handleChange('password')}
                                     />
                                     {!this.state.errorPassword ? null : <FormHelperText error>{this.state.errorPassword}</FormHelperText>}
-                                    {!this.state.error ? null : <FormHelperText style={{width:'100%'}} error>{this.state.error}</FormHelperText>}
+                                    {!this.state.error ? null : <FormHelperText style={{ width: '100%' }} error>{this.state.error}</FormHelperText>}
                                 </form>
                             </Grid>
                         </Grid>
                     </CardContent>
                     <CardActions>
                         <Grid container justify="space-between" >
-
-                            <Button onClick={() => { this.props.history.push('/CreateAccount') }} color="primary">
-                                Создать аккаунт
-                    </Button>
-                            <Button onClick={this.submitLogin} variant="contained" color="primary">
-                                Войти
-                    </Button>
+                            <Button onClick={() => { this.props.history.push('/CreateAccount') }} color="primary">Создать аккаунт</Button>
+                            <Button onClick={this.submitLogin} variant="contained" color="primary">Войти</Button>
                         </Grid>
                     </CardActions>
                 </Card>
             </div>
         );
     }
-
 }
-
 function mapStateToProps(state) {
     return { user: state.user };
 }
-
 export default connect(mapStateToProps, { login, getUser })(withStyles(styles)(Login))
 
 

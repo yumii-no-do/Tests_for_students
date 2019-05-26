@@ -11,7 +11,6 @@ import Mark from './Mark';
 import Statistic from './Statistic';
 import Loading from '../Components/Loading';
 
-
 class Home extends React.Component {
     state = {
         themesList: []
@@ -36,13 +35,11 @@ class Home extends React.Component {
         }
     }
     render() {
-
         return (
             this.props.user.loading
             ?<Loading/>
             :<div>
                 <Header history={this.props.history} />
-                
                 <Switch>
                     <Route path="/Profile" component={Profile} />
                     <Route path="/Test/:string" component={Test} />
@@ -51,16 +48,11 @@ class Home extends React.Component {
                     <Route path="/" component={SelectTest} />
                 </Switch>
             </div>
-
         );
     }
-
 }
-
 function mapStateToProps(state) {
     return { user: state.user };
 }
-
 export default connect(mapStateToProps, { logout, getUser })(Home)
-
 

@@ -25,7 +25,6 @@ const styles = theme => ({
 });
 
 
-
 class CreateAccount extends React.Component {
     state = {
         email: '',
@@ -191,11 +190,7 @@ class CreateAccount extends React.Component {
     }
 
 }
-
 function mapStateToProps(state) {
     return { user: state.user };
 }
-
 export default connect(mapStateToProps, { createAccount, getUser })(withStyles(styles)(CreateAccount))
-
-

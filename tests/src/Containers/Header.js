@@ -12,15 +12,12 @@ class Header extends React.Component {
         anchorEl: null,
         open: false,
     };
-
     handleChange = event => {
         this.setState({ auth: event.target.checked });
     };
-
     handleMenu = event => {
         this.setState({ anchorEl: event.currentTarget });
     };
-
     handleClose = () => {
         this.setState({ anchorEl: null });
     };
@@ -29,7 +26,6 @@ class Header extends React.Component {
         this.setState({ open: true });
 
     };
-
     handleCloseDialog = () => {
         this.setState({ open: false });
     };
@@ -113,8 +109,8 @@ class Header extends React.Component {
             </div>
         )
     }
+    }
 
-}
 function mapStateToProps(state) {
     return { user: state.user };
 }
