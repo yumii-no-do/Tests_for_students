@@ -17,6 +17,9 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Loading from '../Components/Loading';
 
+const style = {
+  
+}
 
 class Home extends React.Component {
   state = {
