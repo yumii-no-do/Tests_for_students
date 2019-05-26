@@ -108,7 +108,7 @@ class Statistic extends React.Component {
                             }
                         </Tabs>
                     </AppBar>
-                    <Paper style={{ overflowX: 'auto', maxWidth: 800, width: '100%', margin: 4, marginTop: 40, }}>
+                    <Paper style={{ overflowX: 'auto', width: '100%', margin: 4, marginTop: 40, }}>
                         <AutoTable rows={
                             listUsersWithGroup[value].map(item => {
                                 let sr = 0;
