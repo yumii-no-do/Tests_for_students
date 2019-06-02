@@ -1,4 +1,3 @@
-import { auth } from '../Firebase';
 import database from '../Firebase';
 export const GET_THEMES = 'get_themes';
 export function getThemes() {
