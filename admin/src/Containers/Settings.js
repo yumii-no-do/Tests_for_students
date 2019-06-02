@@ -1,7 +1,7 @@
 import React from 'react';
 import { logout, getUser } from '../Actions/UserActions';
 import { getThemes, createTheme, updateTheme } from '../Actions/ThemesActions';
-import { getGroups } from '../Actions/GroupsActions';
+import { getGroups,updateGroups } from '../Actions/GroupsActions';
 import { connect } from 'react-redux';
 import database from '../Firebase';
 import Paper from '@material-ui/core/Paper';
@@ -109,6 +109,9 @@ class Settings extends React.Component {
     handleChange = name => event => {
         this.setState({ [name]: event.target.value });
     };
+    handleChangeTabs = (event, value) => {
+        this.setState({ value });
+    };
     selectTheme = name => event => {
 
         let res = null;
@@ -168,6 +171,17 @@ class Settings extends React.Component {
             },
         })
     };
+
+    handleGroup = index => event => {
+        const groups = this.state.groups.list.slice();
+        groups[index] = event.target.value;
+        this.setState({
+            groups: {
+                ...this.state.groups,
+                list: groups
+            },
+        })
+    };
     handleAddQuestion() {
         let questions = this.state.selectQuestion.answers.slice();
         questions.push('')
@@ -175,6 +189,16 @@ class Settings extends React.Component {
             selectQuestion: {
                 ...this.state.selectQuestion,
                 answers: questions
+            },
+        })
+    }
+    handleAddGroup = ()=> {
+        let groups = this.state.groups.list.slice();
+        groups.push('')
+        this.setState({
+            groups: {
+                ...this.state.groups,
+                list: groups
             },
         })
     }
@@ -187,6 +211,7 @@ class Settings extends React.Component {
             },
         })
     };
+    
     handleDeleteQuestion = index => event => {
         let questions = this.state.selectQuestion.answers.slice();
         questions.splice(index, 1);
@@ -194,6 +219,16 @@ class Settings extends React.Component {
             selectQuestion: {
                 ...this.state.selectQuestion,
                 answers: questions
+            },
+        })
+    }
+    handleDeleteGroup = index => event => {
+        let groups = this.state.groups.list.slice();
+        groups.splice(index, 1);
+        this.setState({
+            groups: {
+                ...this.state.groups,
+                list: groups
             },
         })
     }
@@ -211,171 +246,170 @@ class Settings extends React.Component {
             questions: this.state.selectTheme.questions,
         })
         this.props.getThemes();
-
+        alert('Сохранено')
     }
-    _renderThemes=()=>{
+    _renderThemes = () => {
         const { classes } = this.props;
-        return(
+        return (
             <div className='border-rigth' style={{ flexGrow: 1, maxWidth: '20%', overflow: 'auto', }}>
-                            <div className='panel-header border-bottom' style={{ padding: 4, display: 'flex', justifyContent: 'space-between', }}>
-                                <Typography style={{ margin: 6 }} variant="subtitle1" component="span" color="textSecondary">Темы тестов</Typography>
-                                <Tooltip title="Параметры тем" aria-label="Add" enterDelay={500} leaveDelay={200}>
-                                    <IconButton  style={{ padding: 8 }} aria-label="More">
-                                        <MoreVert fontSize="small" />
-                                    </IconButton>
-                                </Tooltip>
-                            </div>
-                            <div className='panel-container'>
-                                <Button color="primary" onClick={this.handleClickOpenCreateTheme} className={classNames(classes.add)}>
-                                    <Add /> Добавить новую тему
+                <div className='panel-header border-bottom' style={{ padding: 4, display: 'flex', justifyContent: 'space-between', }}>
+                    <Typography style={{ margin: 6 }} variant="subtitle1" component="span" color="textSecondary">Темы тестов</Typography>
+                    <Tooltip title="Параметры тем" aria-label="Add" enterDelay={500} leaveDelay={200}>
+                        <IconButton style={{ padding: 8 }} aria-label="More">
+                            <MoreVert fontSize="small" />
+                        </IconButton>
+                    </Tooltip>
+                </div>
+                <div className='panel-container'>
+                    <Button color="primary" onClick={this.handleClickOpenCreateTheme} className={classNames(classes.add)}>
+                        <Add /> Добавить новую тему
                                 </Button>
-                                {
-                                    this.state.themes.map(theme => {
-                                        return (
-                                            <Button
-                                                key={theme.id}
-                                                style={this.state.selectTheme.id === theme.id ? { background: 'rgb(247, 247, 247)' } : {}}
-                                                color={this.state.selectTheme.id === theme.id ? "secondary" : "default"}
-                                                onClick={this.selectTheme(theme.id)}
-                                                className={classes.panelItem}>
-                                                {theme.name}
-                                            </Button>
-                                        )
-                                    })
-                                }
-                            </div>
-                        </div>
-                        
+                    {
+                        this.state.themes.map(theme => {
+                            return (
+                                <Button
+                                    key={theme.id}
+                                    style={this.state.selectTheme.id === theme.id ? { background: 'rgb(247, 247, 247)' } : {}}
+                                    color={this.state.selectTheme.id === theme.id ? "secondary" : "default"}
+                                    onClick={this.selectTheme(theme.id)}
+                                    className={classes.panelItem}>
+                                    {theme.name}
+                                </Button>
+                            )
+                        })
+                    }
+                </div>
+            </div>
+
         )
     }
-    _renderQuestion=()=>{
+    _renderQuestion = () => {
         const { classes } = this.props;
-        return(
+        return (
             <div className='border-rigth' style={{ flexGrow: 1, maxWidth: '20%', overflow: 'auto', }}>
-                            <div className='panel-header border-bottom'>
-                                <Typography variant="subtitle1" component="span" color="textSecondary">Вопросы поданной теме</Typography>
-                            </div>
-                            {
-                                this.state.selectTheme === '' ? null :
-                                    <div className='panel-container'>
-                                        <Button color="primary" className={classNames(classes.add)} onClick={this.handleClickOpenCreateQuestion}>
-                                            <Add /> Добавить новый вопрос
+                <div className='panel-header border-bottom'>
+                    <Typography variant="subtitle1" component="span" color="textSecondary">Вопросы поданной теме</Typography>
+                </div>
+                {
+                    this.state.selectTheme === '' ? null :
+                        <div className='panel-container'>
+                            <Button color="primary" className={classNames(classes.add)} onClick={this.handleClickOpenCreateQuestion}>
+                                <Add /> Добавить новый вопрос
                                             </Button>
-                                        {
-                                            this.state.selectTheme.questions.map((question, index) => {
-                                                return (
-                                                    <Button
-                                                        color="default"
-                                                        key={index}
-                                                        className={classes.panelItem}
-                                                        onClick={this.selectQuestion(index)}
-                                                        style={this.state.selectQuestionId === index ? { background: 'rgb(247, 247, 247)' } : {}}
-                                                        color={this.state.selectQuestionId === index ? "secondary" : "default"}
-                                                    >
-                                                        {question.title.substr(0, 33)}
-                                                    </Button>
-                                                )
-                                            })
-                                        }
-                                    </div>
+                            {
+                                this.state.selectTheme.questions.map((question, index) => {
+                                    return (
+                                        <Button
+                                            color="default"
+                                            key={index}
+                                            className={classes.panelItem}
+                                            onClick={this.selectQuestion(index)}
+                                            style={this.state.selectQuestionId === index ? { background: 'rgb(247, 247, 247)' } : {}}
+                                            color={this.state.selectQuestionId === index ? "secondary" : "default"}
+                                        >
+                                            {question.title.substr(0, 33)}
+                                        </Button>
+                                    )
+                                })
                             }
                         </div>
-                        
+                }
+            </div>
+
         )
     }
-    _renderSetting=()=>{
+    _renderSetting = () => {
         const { classes } = this.props;
-        return(
+        return (
             <div style={{ flexGrow: 3, maxWidth: '60%', overflow: 'auto', }}>
-            <div className='panel-header border-bottom' style={{ padding: 4, display: 'flex', justifyContent: 'space-between', }}>
-                <Typography style={{ margin: 6 }} variant="subtitle1" component="span" color="textSecondary">Настройки вопроса</Typography>
-                <Button disabled={this.state.selectQuestionId === null} onClick={this.handleUpdate.bind(this)} variant="text" color="primary">Сохранить изменения</Button>
-            </div>
-            {this.state.selectQuestionId === null ? null :
-                <div className='panel-container'>
-                    <div style={{
-                        display: 'flex',
-                        justifyContent: 'flex-start',
-                        alignItems: 'center',
-                        padding: 10,
-                    }}>
-                        <Typography style={{ marginRight: 10, }} variant="subtitle2" component="span" color="textPrimary">Вопрос:</Typography>
-                        <TextField
-                            id="standard-name"
-                            value={this.state.questionTitle}
-                            onChange={this.handleChange('questionTitle')}
-                            margin="none"
-                            style={{ flexGrow: 1, }}
-                            multiline
-                        />
-                    </div>
-                    <div style={{
-                        display: 'flex',
-                        justifyContent: 'flex-start',
-                        alignItems: 'center',
-                        padding: 10,
-                        flexWrap: 'wrap',
-                    }}>
-                        <Typography style={{ marginRight: 10, }} variant="subtitle2" component="span" color="textPrimary">Варианты ответа:</Typography>
-                        <FormControl component="fieldset" style={{ flexGrow: 1, width: '100%' }}>
-                            <RadioGroup
-                                aria-label="Gender"
-                                name="gender1"
-                            >
-
-                                {
-                                    this.state.selectQuestion.answers.map((item, index) => {
-                                        return (
-                                            <div>
-                                                <div key={index} className={classes.radioItem}>
-                                                    <Radio
-                                                        value={index}
-                                                        checked={this.state.selectQuestion.answer + '' === index + ''}
-                                                        onChange={this.handleChangeAnswer(index)}
-                                                        name="radio-button-questions"
-                                                        aria-label={item}
-                                                    />
-                                                    <TextField
-                                                        multiline
-                                                        id="standard-name"
-                                                        value={this.state.selectQuestion.answers[index]}
-                                                        onChange={this.handleQuestion(index)}
-                                                        margin="none"
-                                                        className={classes.radioSelect}
-                                                        InputProps={{
-                                                            classes: {
-                                                                underline: classes.cssUnderLine,
-                                                            }
-                                                        }}
-                                                        // error={this.state.questions[index].error !== false}
-                                                        fullWidth
-                                                        placeholder='Вариант ответа'
-                                                    />
-                                                    <Tooltip title="Удалить данный вариант ответа" aria-label="Add" enterDelay={500} leaveDelay={200}>
-                                                        <IconButton onClick={this.handleDeleteQuestion(index)} aria-label="Delete">
-                                                            <DeleteIcon fontSize="small" />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                </div>
-                                                {/* {!this.state.questions[index].error ? null : <FormHelperText error>{this.state.questions[index].error}</FormHelperText>} */}
-
-                                            </div>
-                                        )
-                                    })
-
-                                }
-
-                                {/* <Button color="primary" fullWidth style={{justifyContent: 'flex-start',textAlign: 'start'}} onClick={this.handleAddQuestion.bind(this)} className={classNames(classes.add)}><Add /> Добавить вариант ответа</Button> */}
-
-                                <Button color="primary" onClick={this.handleAddQuestion.bind(this)} className={classNames(classes.add)}><Add /> Добавить вариант ответа</Button>
-                            </RadioGroup>
-                        </FormControl>
-                    </div>
+                <div className='panel-header border-bottom' style={{ padding: 4, display: 'flex', justifyContent: 'space-between', }}>
+                    <Typography style={{ margin: 6 }} variant="subtitle1" component="span" color="textSecondary">Настройки вопроса</Typography>
+                    <Button disabled={this.state.selectQuestionId === null} onClick={this.handleUpdate.bind(this)} variant="text" color="primary">Сохранить изменения</Button>
                 </div>
+                {this.state.selectQuestionId === null ? null :
+                    <div className='panel-container'>
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'flex-start',
+                            alignItems: 'center',
+                            padding: 10,
+                        }}>
+                            <Typography style={{ marginRight: 10, }} variant="subtitle2" component="span" color="textPrimary">Вопрос:</Typography>
+                            <TextField
+                                id="standard-name"
+                                value={this.state.questionTitle}
+                                onChange={this.handleChange('questionTitle')}
+                                margin="none"
+                                style={{ flexGrow: 1, }}
+                                multiline
+                            />
+                        </div>
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'flex-start',
+                            alignItems: 'center',
+                            padding: 10,
+                            flexWrap: 'wrap',
+                        }}>
+                            <Typography style={{ marginRight: 10, }} variant="subtitle2" component="span" color="textPrimary">Варианты ответа:</Typography>
+                            <FormControl component="fieldset" style={{ flexGrow: 1, width: '100%' }}>
+                                <RadioGroup
+                                    aria-label="Gender"
+                                    name="gender1"
+                                >
+                                    {
+                                        this.state.selectQuestion.answers.map((item, index) => {
+                                            return (
+                                                <div>
+                                                    <div key={index} className={classes.radioItem}>
+                                                        <Radio
+                                                            value={index}
+                                                            checked={this.state.selectQuestion.answer + '' === index + ''}
+                                                            onChange={this.handleChangeAnswer(index)}
+                                                            name="radio-button-questions"
+                                                            aria-label={item}
+                                                        />
+                                                        <TextField
+                                                            multiline
+                                                            id="standard-name"
+                                                            value={this.state.selectQuestion.answers[index]}
+                                                            onChange={this.handleQuestion(index)}
+                                                            margin="none"
+                                                            className={classes.radioSelect}
+                                                            InputProps={{
+                                                                classes: {
+                                                                    underline: classes.cssUnderLine,
+                                                                }
+                                                            }}
+                                                            // error={this.state.questions[index].error !== false}
+                                                            fullWidth
+                                                            placeholder='Вариант ответа'
+                                                        />
+                                                        <Tooltip title="Удалить данный вариант ответа" aria-label="Add" enterDelay={500} leaveDelay={200}>
+                                                            <IconButton onClick={this.handleDeleteQuestion(index)} aria-label="Delete">
+                                                                <DeleteIcon fontSize="small" />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </div>
+                                                    {/* {!this.state.questions[index].error ? null : <FormHelperText error>{this.state.questions[index].error}</FormHelperText>} */}
 
-            }
-        </div>
-   
+                                                </div>
+                                            )
+                                        })
+
+                                    }
+
+                                    {/* <Button color="primary" fullWidth style={{justifyContent: 'flex-start',textAlign: 'start'}} onClick={this.handleAddQuestion.bind(this)} className={classNames(classes.add)}><Add /> Добавить вариант ответа</Button> */}
+
+                                    <Button color="primary" onClick={this.handleAddQuestion.bind(this)} className={classNames(classes.add)}><Add /> Добавить вариант ответа</Button>
+                                </RadioGroup>
+                            </FormControl>
+                        </div>
+                    </div>
+
+                }
+            </div>
+
         )
     }
     _renderElements = () => {
@@ -386,42 +420,118 @@ class Settings extends React.Component {
                     <div style={{ display: 'flex', justifyContent: 'center', }}></div>
                     <Tabs
                         value={value}
-                        onChange={this.handleChange}
+                        onChange={this.handleChangeTabs}
                         indicatorColor="primary"
                         textColor="primary"
                         variant="scrollable"
                         scrollButtons="auto"
                     >
-                        <Tab label="Темы" key={1} />
-                        <Tab label="Группы" key={2} />
-                        <Tab label="Настройка приложения" key={3} />
+                        <Tab label="Темы" />
+                        <Tab label="Группы" />
+                        <Tab label="Настройка приложения" />
                     </Tabs>
                 </AppBar>
-                <Paper style={{ overflowX: 'auto', width: '100%', margin: 24, marginTop: 48, maxWidth: 1500, height: 'calc(100vh - 168px )', }}>
-                    <div style={{ display: 'flex', height: '100%', height: '100%', }}>
-                        {this._renderThemes()}
-                        {this._renderQuestion()}
-                        {this._renderSetting()}
-                        </div>
-                </Paper>
-                {(this.state.groups.loading === false) ?
-                    <CreateTheme
-                        open={this.state.isOpenCteateTheme}
-                        handleClose={this.handleCloseCreateTheme}
-                        handelData={this.handelCreateTheme}
-                        groups={this.state.groups.list}
-                    /> : null
+                {value === 0 &&
+                    <React.Fragment>
+                        <Paper style={{ overflowX: 'auto', width: '100%', margin: 24, marginTop: 48, maxWidth: 1500, height: 'calc(100vh - 168px )', }}>
+                            <div style={{ display: 'flex', height: '100%', height: '100%', }}>
+                                {this._renderThemes()}
+                                {this._renderQuestion()}
+                                {this._renderSetting()}
+                            </div>
+                        </Paper>
+                        {(this.state.groups.loading === false) ?
+                            <CreateTheme
+                                open={this.state.isOpenCteateTheme}
+                                handleClose={this.handleCloseCreateTheme}
+                                handelData={this.handelCreateTheme}
+                                groups={this.state.groups.list}
+                            /> : null
+                        }
+                        {console.log(this.state.groups)}
+                        <CreateQuestion
+                            open={this.state.isOpenCreateQuestion}
+                            handleClose={this.handleCloseCreateQuestion}
+                            handelData={this.handelCreateQuestion}
+                        />
+                    </React.Fragment>
                 }
-                {console.log(this.state.groups)}
-                <CreateQuestion
-                    open={this.state.isOpenCreateQuestion}
-                    handleClose={this.handleCloseCreateQuestion}
-                    handelData={this.handelCreateQuestion}
-                />
+                {value === 1 && this._groupEditor()}
+                {value === 2 && 
+                    <React.Fragment>
+                        app sett
+                    </React.Fragment>
+                }
+
             </div >
 
         )
     }
+
+    saveGroups = ()=>{
+        this.props.updateGroups(
+            this.state.groups.list
+        )
+        alert("Обновлено")
+    }
+
+    _groupEditor(){
+        const { classes } = this.props;
+        return( 
+            <Paper style={{ width: '100%', margin: '48px 24px 24px',padding: '20px', marginTop: 48, maxWidth: 800, }}>
+            <FormControl component="fieldset" style={{ flexGrow: 1, width: '100%' }}>
+            <RadioGroup
+                aria-label="Gender"
+                name="gender1"
+            >
+                {
+                    this.state.groups.list.map((item, index) => {
+                        return (
+                            <div>
+                                <div key={index} className={classes.radioItem}>
+                                    <TextField
+                                        multiline
+                                        id="standard-name"
+                                        value={item}
+                                        onChange={this.handleGroup(index)}
+                                        margin="none"
+                                        className={classes.radioSelect}
+                                        InputProps={{
+                                            classes: {
+                                                underline: classes.cssUnderLine,
+                                            }
+                                        }}
+                                        // error={this.state.questions[index].error !== false}
+                                        fullWidth
+                                        placeholder='Название группы'
+                                    />
+                                    <Tooltip title="Удалить данную группу" aria-label="Add" enterDelay={500} leaveDelay={200}>
+                                        <IconButton onClick={this.handleDeleteGroup(index)} aria-label="Delete">
+                                            <DeleteIcon fontSize="small" />
+                                        </IconButton>
+                                    </Tooltip>
+                                </div>
+                                {/* {!this.state.questions[index].error ? null : <FormHelperText error>{this.state.questions[index].error}</FormHelperText>} */}
+
+                            </div>
+                        )
+                    })
+
+                }
+
+                {/* <Button color="primary" fullWidth style={{justifyContent: 'flex-start',textAlign: 'start'}} onClick={this.handleAddQuestion.bind(this)} className={classNames(classes.add)}><Add /> Добавить вариант ответа</Button> */}
+
+                <Button color="primary" onClick={this.handleAddGroup} className={classNames(classes.add)}><Add /> Добавить группу</Button>
+                <Button onClick={this.saveGroups} variant="contained" color="primary">
+                                Сохранить
+                    </Button>
+            </RadioGroup>
+        </FormControl>
+        </Paper>
+        )
+    }
+
+
 }
 
 function mapStateToProps(state) {
@@ -431,4 +541,4 @@ function mapStateToProps(state) {
         groups: state.groups,
     };
 }
-export default connect(mapStateToProps, { getGroups, getUser, getThemes, updateTheme, createTheme })(withStyles(styles)(Settings))
+export default connect(mapStateToProps, { getGroups, getUser, getThemes, updateTheme, createTheme,updateGroups })(withStyles(styles)(Settings))

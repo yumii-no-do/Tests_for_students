@@ -13,8 +13,13 @@ export function getGroups() {
 ;
     };
 }
+export const UPDATES_GROUPS = 'updateGroups';
 export function updateGroups(array) {
     return dispatch => {
-        database.collection('groups').doc('groupList').update({list:array})
+        database.collection('groups').doc('groupList').update({list:array});
+        dispatch({
+            type: UPDATES_GROUPS,
+            payload: {list:array}
+        });
     }
 }
