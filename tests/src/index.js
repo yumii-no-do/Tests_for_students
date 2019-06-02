@@ -19,7 +19,6 @@ ReactDOM.render(
     <Provider store={createStoreWithMiddleware(reducers)}>
         <BrowserRouter>
             <Switch>
-                <Route path="/CreateAccount" component={CreateAccount} />
                 <Route path="/Login" component={Login} />
                 <Route path="/" component={Home} />
                 <Redirect from='/Login' to='/'/>

@@ -38,6 +38,9 @@ class Login extends React.Component {
     handleChange = name => event => {
         this.setState({ [name]: event.target.value });
     }
+    handleChangeEmail = event => {
+        this.setState({ 'email': event.target.value+"@stolla.ru"});
+    }
     componentWillReceiveProps(nextProps) {
         if (nextProps.user.email !== undefined) {
             this.props.history.push('/');
@@ -92,15 +95,15 @@ class Login extends React.Component {
                                 <form className={classes.container} noValidate autoComplete="off">
                                     <TextField
                                         id="outlined-email-input"
-                                        label="Email"
+                                        label="Логин"
                                         error={this.state.errorEmail !== false}
                                         className={classes.textField}
-                                        type="email"
+                                        type="text"
                                         name="email"
                                         autoComplete="email"
                                         margin="normal"
                                         variant="outlined"
-                                        onChange={this.handleChange('email')}
+                                        onChange={this.handleChangeEmail}
                                     />
                                     {!this.state.errorEmail ? null : <FormHelperText error>{this.state.errorEmail}</FormHelperText>}
                                     <TextField
@@ -122,8 +125,8 @@ class Login extends React.Component {
                         </Grid>
                     </CardContent>
                     <CardActions>
-                        <Grid container justify="space-between" >
-                            <Button onClick={() => { this.props.history.push('/CreateAccount') }} color="primary">Создать аккаунт</Button>
+                        <Grid container justify="flex-end" >
+                            {/* <Button onClick={() => { this.props.history.push('/CreateAccount') }} color="primary">Создать аккаунт</Button> */}
                             <Button onClick={this.submitLogin} variant="contained" color="primary">Войти</Button>
                         </Grid>
                     </CardActions>

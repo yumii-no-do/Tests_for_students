@@ -23,11 +23,3 @@ export function logout() {
 export function createAccount(email, password,name,group) {
     return dispatch => auth.createUserWithEmailAndPassword(email, password);
 }
-// export function getUserData() {
-//     return dispatch => auth.onAuthStateChanged(user => {
-//         dispatch({
-//             type: GET_USER,
-//             payload: user
-//         });
-//     });
-// }
