@@ -1,7 +1,7 @@
 # Tests_for_students
 Tests for students in React.js and Firebase
 Link to sites:
-* [admin ( l:admin@gmail.com, p:admin1212 )](http://stolla-admin.sorei.ru)
+* [admin](http://stolla-admin.sorei.ru)
 * [tests](http://stolla-testing.sorei.ru)
 
 ### Tests example
