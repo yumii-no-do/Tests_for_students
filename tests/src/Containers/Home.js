@@ -1,7 +1,7 @@
 import React from 'react';
 import { logout, getUser } from '../Actions/UserActions';
 import { connect } from 'react-redux';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route,HashRouter } from 'react-router-dom';
 import Profile from './Profile';
 import Header from './Header';
 import Test from './Test';
@@ -33,6 +33,11 @@ class Home extends React.Component {
         if (nextProps.user.loading === false && nextProps.user.email === undefined) {
             this.props.history.replace('/Login');
         }
+    }
+    componentWillUnmount(){
+      this.setState({
+          
+      })
     }
     render() {
         return (

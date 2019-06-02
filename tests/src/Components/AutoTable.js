@@ -23,8 +23,8 @@ function AutoTable(props) {
                     <TableRow key={index}>
                         {row.map((item, indexRow) => {
                             return indexRow === 0
-                                ? <TableCell key={indexRow} component="th" scope="row">{item}</TableCell>
-                                : <TableCell key={indexRow} align="right">{item}</TableCell>
+                                ? <TableCell key={indexRow} style={styles.tableCell}  component="th" scope="row">{item}</TableCell>
+                                : <TableCell key={indexRow} style={styles.tableCell} align="right">{item}</TableCell>
                         })}
                     </TableRow>
                 ))}
@@ -33,6 +33,11 @@ function AutoTable(props) {
     );
 }
 
-
+const styles={
+    tableCell:{
+        maxWidth: "200px",
+        minWidth: "170px",
+    }
+}
 
 export default AutoTable;
