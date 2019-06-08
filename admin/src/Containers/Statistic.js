@@ -1,5 +1,7 @@
 import React from 'react';
-import { logout, getUser } from '../Actions/UserActions';
+import { logout, getUser, getUsers } from '../Actions/UserActions';
+import { getGroups } from '../Actions/GroupsActions';
+import { getThemes } from '../Actions/ThemesActions';
 import { connect } from 'react-redux';
 import database from '../Firebase';
 import Paper from '@material-ui/core/Paper';
@@ -19,77 +21,93 @@ class Statistic extends React.Component {
         table: [[]],
     }
     componentWillMount() {
-        this.props.getUser();
-    }
-    componentWillReceiveProps(nextProps) {
+        this.props.user.loading && this.props.getUser();
+        this.props.users.loading && this.props.getUsers();
+        this.props.groups.loading && this.props.getGroups();
+        this.props.themes.loading && this.props.getThemes();
+
+
         let listUsers, groupData, groupList, listUsersWithGroup = null;
-        database.collection('users').get()
-            .then(list => {
-                listUsers = list.docs.map(doc => {
-                    return { id: doc.id, doc: doc.data() }
-                })
+        const { users, themes, groups, user } = this.props;
+
+
+        listUsersWithGroup = [];
+        groups.list.forEach((item, index) => { listUsersWithGroup[index] = [] })
+        users.users.forEach(item => {
+            listUsersWithGroup[+item.doc.group].push({
+                id: item.id,
+                groupId: +item.doc.group,
+                group: groups.list[+item.doc.group],
+                name: item.doc.name,
+                marks: item.doc.marks,
             })
-            .then(() => {
-                database.collection('groups').doc('groupList').get()
-                    .then(list => {
-                        groupData = list.data();
-                        groupList = groupData.list;
-                        listUsersWithGroup = [];
-                        groupList.forEach((item, index) => { listUsersWithGroup[index] = [] })
-                        listUsers.forEach(item => {
-                            listUsersWithGroup[+item.doc.group].push({
-                                id: item.id,
-                                groupId: +item.doc.group,
-                                group: groupList[+item.doc.group],
-                                name: item.doc.name,
-                                marks: item.doc.marks,
-                            })
-                        })
-                    })
-                    .then(() => {
-                        database.collection('themes').get()
-                            .then(list => {
-                                let preThemeListId = list.docs.map(item => {
-                                    return { id: item.id, name: item.data().name, access: item.data().access }
-                                });
-                                let themeListId = [];
-                                groupList.forEach((item, index) => { themeListId[index] = [] })
-                                preThemeListId.forEach(item => {
-                                    item.access.forEach(acc => {
-                                        themeListId[+acc].push({ id: item.id, name: item.name })
-                                    })
-                                })
-                                const tabs = groupList.map((item, index) => {
-                                    return <Tab label={item} key={index} />
-                                })
-                                listUsersWithGroup[this.state.value].sort(function (a, b) {
-                                    if (a.name > b.name) {
-                                        return 1;
-                                    }
-                                    if (a.name < b.name) {
-                                        return -1;
-                                    }
-                                    // a должно быть равным b
-                                    return 0;
-                                });
-                                this.setState({
-                                    listUsersWithGroup,
-                                    groupList,
-                                    themeListId,
-                                    loading: false,
-                                    tabs,
-                                })
-                            })
-                    })
+        })
+        console.log(listUsersWithGroup);
+        let preThemeListId = themes.data.map(item => {
+            return { id: item.id, name: item.name, access: item.access }
+        });
+        console.log('preThemeListId',preThemeListId)
+        // })
+        //                         .then(() => {
+        // database.collection('themes').get()
+        //     .then(list => {
+        //         
+        const themeListId = [];
+        groups.list.forEach((item, index) => { return themeListId[+index] = [null] })
+        console.log('themeListId',themeListId)
+        // })
+        preThemeListId.forEach(item => {
+            item.access.forEach(accessItem => {
+                themeListId[+accessItem]=[...themeListId[+accessItem],{ id: item.id, name: item.name }]
             })
+        })
+        const tabs = groups.list.map((item, index) => {
+            return <Tab label={item} key={index} />
+        })
+        listUsersWithGroup[this.state.value].sort(function (a, b) {
+            if (a.name > b.name) {
+                return 1;
+            }
+            if (a.name < b.name) {
+                return -1;
+            }
+            // a должно быть равным b
+            return 0;
+        });
+        this.setState({
+            listUsersWithGroup,
+            groupList,
+            themeListId,
+            loading: false,
+            tabs,
+        })
+        // })
+        // })
+        //                     })
+        // }
+
+
+
+        // this.props.groups
+        // groupList.forEach((item, index) => { listUsersWithGroup[index] = [] })
+        // listUsers.forEach(item => {
+        //     listUsersWithGroup[+item.doc.group].push({
+        //         id: item.id,
+        //         groupId: +item.doc.group,
+        //         group: groupList[+item.doc.group],
+        //         name: item.doc.name,
+        //         marks: item.doc.marks,
+        //     })
+        // })
 
     }
+
     handleChange = (event, value) => {
         this.setState({ value });
     };
     render() {
         const { value, listUsersWithGroup, themeListId, tabs } = this.state;
-        
+
         return (
             this.state.loading
                 ? <Loading />
@@ -101,11 +119,8 @@ class Statistic extends React.Component {
                             indicatorColor="primary"
                             textColor="primary"
                             variant="scrollable"
-                            scrollButtons="auto"
-                        >
-                            {
-                                tabs
-                            }
+                            scrollButtons="auto">
+                            {tabs}
                         </Tabs>
                     </AppBar>
                     <Paper style={{ overflowX: 'auto', maxWidth: 800, width: '100%', margin: 4, marginTop: 40, }}>
@@ -140,7 +155,12 @@ class Statistic extends React.Component {
 
 
 function mapStateToProps(state) {
-    return { user: state.user };
+    return {
+        user: state.user,
+        users: state.users,
+        groups: state.groups,
+        themes: state.themes,
+    };
 }
 
-export default connect(mapStateToProps, { logout, getUser })(Statistic)
+export default connect(mapStateToProps, { logout, getUser, getUsers, getGroups, getThemes})(Statistic)

@@ -16,7 +16,7 @@ const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 
 // рендер приложения
 ReactDOM.render(
-    <Provider store={createStoreWithMiddleware(reducers)}>
+    <Provider store={createStoreWithMiddleware(reducers,window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())}>
         <BrowserRouter>
             <Switch>
                 <Route path="/Login" component={Login} />

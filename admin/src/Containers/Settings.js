@@ -93,9 +93,7 @@ class Settings extends React.Component {
 
 
     componentWillMount() {
-        this.props.getUser();
-        this.props.getGroups();
-        this.props.getThemes();
+
     }
     componentWillReceiveProps(nextProps) {
         if (nextProps.themes.loading === false) {
