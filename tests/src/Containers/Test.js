@@ -44,7 +44,9 @@ class Test extends React.Component {
     },1000)
 
     setTimeout(()=>{
-      clearInterval(tik)
+      clearInterval(tik);
+      this.finalAll();   
+      this.props.history.replace('/home/mark');   
     },this.state.timeOut)
   }
 
@@ -266,13 +268,11 @@ class Test extends React.Component {
                     </FormControl>
                   </div>
                 </CardContent>
-
                 <CardActions style={{ display: 'flex', justifyContent: 'flex-end' }}>
                   {
                     (questions.length - 1 === activeStep)
                       ? <Button variant="contained" color="primary" onClick={readyQuestions} disabled={this.state.loading} >Готово</Button>
                       : <Button variant="contained" onClick={nextQuestions} color="primary" disabled={this.state.loading} >Далее</Button>
-
                   }
                 </CardActions>
               </Card>

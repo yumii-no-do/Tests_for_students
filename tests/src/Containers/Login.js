@@ -86,7 +86,7 @@ class Login extends React.Component {
                                 <form className={classes.container} noValidate autoComplete="off">
                                     <TextField
                                         id="outlined-email-input"
-                                        label="Логин"
+                                        label="Email"
                                         error={this.state.errorEmail !== false}
                                         className={classes.textField}
                                         type="email"
@@ -115,8 +115,8 @@ class Login extends React.Component {
                             </Grid>
                         </Grid>
                     </CardContent>
-                    <CardActions>
-                        <Grid container justify="flex-end" >
+                    <CardActions style={{padding:'0 16px 16px'}}>
+                        <Grid container justify="space-between"  style={{margin:'0 8px'}}>
                             <Link to='/create-account'>
                                 <Button color="primary">Создать аккаунт</Button>
                             </Link>

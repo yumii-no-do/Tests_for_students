@@ -52,7 +52,7 @@ componentWillUnmount(){
                         </Switch>
                         :
                         <div>
-                            {!user.emailVerified && <EmailVerified emailVerifiedFun={this.props.userVerification} />}
+                            {!user.emailVerified && <EmailVerified emailVerifiedFun={this.props.userVerification} updateData={this.props.getAllData}/>}
                             {!user.teacherVerified && <TeacherVerified />}
                         </div>
                     }
@@ -62,7 +62,7 @@ componentWillUnmount(){
 }
 
 
-function EmailVerified({ emailVerifiedFun }) {
+function EmailVerified({ emailVerifiedFun,updateData }) {
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', paddingTop: '40px' }}>
             <Card style={{ maxWidth: 500, width: '100%', padding: 10, margin: 10 }}>
@@ -71,6 +71,7 @@ function EmailVerified({ emailVerifiedFun }) {
                 </CardContent>
                 <CardActions>
                     <Button onClick={emailVerifiedFun} variant="contained" color="primary">Отправить подтверждение</Button>
+                    <Button onClick={()=>{window.location.reload()}} variant="contained" color="default">Обновить</Button>
                 </CardActions>
             </Card>
         </div>
