@@ -17,7 +17,8 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Loading from '../Components/Loading';
-
+import { setSelectedThemeId } from '../Actions/ThemesActions';
+import moment from 'moment';
 const style = {
 
 }
@@ -31,7 +32,21 @@ class Test extends React.Component {
     loading: true,
     answerSelect: '',
     answerList: [],
+    timer:null,
   }
+
+  timer(){
+    const tik = setInterval(()=>{
+      this.setState({
+        timer:this.state.timer-1
+      })
+    },1000)
+
+    setTimeout(()=>{
+      clearInterval(tik)
+    },this.state.timeOut)
+  }
+
   componentWillMount() {
     database.collection('themes').doc(this.props.selectedTheme).get()
       .then(doc => {
@@ -40,6 +55,8 @@ class Test extends React.Component {
           this.setState({
             name: data.name,
             questions: data.questions,
+            timer:+data.timer*60,
+            timeOut:+data.timer*60*1000,
           })
 
         } else {
@@ -50,11 +67,13 @@ class Test extends React.Component {
         this.setState({
           loading: false,
         })
+        this.timer();
       })
   }
   componentWillUnmount(){
     this.finalAll();
   }
+
 
 
   handleNext = () => {
@@ -96,7 +115,8 @@ class Test extends React.Component {
         })
         this.setState({
           answerList:chAnswerList
-        })
+        });
+        
     }
 
 
@@ -126,6 +146,7 @@ class Test extends React.Component {
       this.props.getUser();
       this.props.getUsers();
     })
+
   }
 
   checkRightAnswer(){
@@ -207,6 +228,7 @@ class Test extends React.Component {
                 maxWidth: 800,
               }}>
                 <CardContent>
+                  {/* {moment(this.state.timer)} */}
                   <div><Stepper activeStep={activeStep}>
                     {this.state.questions.map((item, index) => (
                       <Step key={index}>
@@ -270,4 +292,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { getUser,getUsers })(Test)
+export default connect(mapStateToProps, { getUser,getUsers ,setSelectedThemeId})(Test)
