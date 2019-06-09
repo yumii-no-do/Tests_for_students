@@ -22,6 +22,7 @@ import moment from 'moment';
 const style = {
 
 }
+moment().format();
 
 class Test extends React.Component {
   state = {
@@ -228,7 +229,10 @@ class Test extends React.Component {
                 maxWidth: 800,
               }}>
                 <CardContent>
-                  {/* {moment(this.state.timer)} */}
+                
+                <Typography variant="subtitle1" color="secondary" component="p" align="right">
+                Оставшееся время : {moment.unix(this.state.timer).format('mm:ss')}
+                    </Typography>
                   <div><Stepper activeStep={activeStep}>
                     {this.state.questions.map((item, index) => (
                       <Step key={index}>
@@ -236,6 +240,7 @@ class Test extends React.Component {
                       </Step>
                     ))}
                   </Stepper>
+                 
                     <Typography variant="h5" component="h2">
                       {activeQuestion.title}
                     </Typography>
@@ -269,10 +274,6 @@ class Test extends React.Component {
                       : <Button variant="contained" onClick={nextQuestions} color="primary" disabled={this.state.loading} >Далее</Button>
 
                   }
-                  <Button variant="contained" onClick={()=>{
-                    this.finalAll();
-                  }} color="primary" >Fin</Button>
-
                 </CardActions>
               </Card>
             </div>
