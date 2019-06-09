@@ -1,6 +1,7 @@
 import React from 'react';
-import { logout, getUser } from '../Actions/UserActions';
-import { connect } from 'react-redux';
+import {getUser,} from '../Actions/UserActions';
+import {getUsers,} from '../Actions/UsersActions';
+import {connect } from 'react-redux';
 import database from '../Firebase';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -18,10 +19,10 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import Loading from '../Components/Loading';
 
 const style = {
-  
+
 }
 
-class Home extends React.Component {
+class Test extends React.Component {
   state = {
     error: false,
     errorSelect: false,
@@ -32,9 +33,7 @@ class Home extends React.Component {
     answerList: [],
   }
   componentWillMount() {
-    this.props.getUser();
-
-    database.collection('themes').doc(this.props.match.params.string).get()
+    database.collection('themes').doc(this.props.selectedTheme).get()
       .then(doc => {
         if (doc.exists) {
           const data = doc.data();
@@ -53,6 +52,11 @@ class Home extends React.Component {
         })
       })
   }
+  componentWillUnmount(){
+    this.finalAll();
+  }
+
+
   handleNext = () => {
     this.setState(state => ({
       activeStep: state.activeStep + 1,
@@ -78,6 +82,56 @@ class Home extends React.Component {
       })
     }
   }
+
+  finalAll(){
+    if(this.state.questions.length !== this.state.answerList.length){
+      this.setState({
+        answerSelect:'-1'
+      })
+      let chAnswerList = this.state.answerList;
+      this.state.questions.forEach((item,index)=>{
+         if(this.state.answerList[index] == undefined){
+          chAnswerList[index]='-1'
+         }
+        })
+        this.setState({
+          answerList:chAnswerList
+        })
+    }
+
+
+    const answerList = this.state.questions.map((item, index) => {
+      return item.answer;
+    })
+    let rigth = 0;
+    answerList.forEach((item, index) => {
+      if (item + '' === this.state.answerList[index]) {
+        rigth++;
+      }
+    })
+    const prosent = (rigth / answerList.length) * 100;
+    let mark = 0;
+    if (prosent >= 70 && prosent <= 100) { mark = 5 }
+    if (prosent >= 60 && prosent < 70) { mark = 4 }
+    if (prosent >= 50 && prosent < 60) { mark = 3 }
+    if (prosent < 50) { mark = 2 }
+
+    // this.props.userUpdate(this.props.user.uid,{
+    //   ["marks." + this.props.selectedTheme]: mark
+    // })
+    database.collection('users').doc(this.props.user.uid).update({
+      ["marks." + this.props.selectedTheme]: mark
+    }).then((e) => {
+      console.log(e);
+      this.props.getUser();
+      this.props.getUsers();
+    })
+  }
+
+  checkRightAnswer(){
+    
+  }
+
   readyQuestions() {
     if (this.state.answerSelect !== '') {
       const answerListUser = this.state.answerList;
@@ -102,22 +156,31 @@ class Home extends React.Component {
       if (prosent >= 60 && prosent < 70) { mark = 4 }
       if (prosent >= 50 && prosent < 60) { mark = 3 }
       if (prosent < 50) { mark = 2 }
+
+      // this.props.userUpdate(this.props.user.uid,{
+      //   ["marks." + this.props.selectedTheme]: mark
+      // })
       database.collection('users').doc(this.props.user.uid).update({
-        ["marks." + this.props.match.params.string]: mark
+        ["marks." + this.props.selectedTheme]: mark
+      }).then((e) => {
+        console.log(e);
+        this.props.getUser();
+        this.props.getUsers();
       })
-      this.props.history.replace('/Mark/'+this.props.match.params.string);
+      this.props.history.replace('/home/mark');
     } else {
       this.setState({
         errorSelect: 'Необходимо выбрать один или несколько вариантов ответа'
       })
     }
   }
-  componentWillReceiveProps(nextProps) {
-    this.getData(nextProps.user.uid);
-  }
+
+  // componentWillReceiveProps(nextProps) {
+  //   this.getData(nextProps.user.uid);
+  // }
   getData(userID) {
     database.collection('users').doc(userID).get().then(doc => {
-      if (doc.data().marks[this.props.match.params.string]) {
+      if (doc.data().marks[this.props.selectedTheme]) {
         this.setState({
           error: 'Вы уже проходили данный тест'
         })
@@ -133,18 +196,18 @@ class Home extends React.Component {
     return (
       <div>
         {this.state.error
-          ? <div style={{ display: 'flex', justifyContent: 'center',marginTop:40, }}><Typography variant="h5" component="h2" color="error" >{this.state.error}</Typography></div>
+          ? <div style={{ display: 'flex', justifyContent: 'center', marginTop: 40, }}><Typography variant="h5" component="h2" color="error" >{this.state.error}</Typography></div>
           : this.state.loading
-            ? <Loading/>
+            ? <Loading />
             : <div style={{ display: 'flex', justifyContent: 'center', }}>
-            <Card style={{
-              width: '100%',
-              margin: 4,
-              marginTop: 40,
-              maxWidth: 800,
-            }}>
-              <CardContent>
-                <div><Stepper activeStep={activeStep}>
+              <Card style={{
+                width: '100%',
+                margin: 4,
+                marginTop: 40,
+                maxWidth: 800,
+              }}>
+                <CardContent>
+                  <div><Stepper activeStep={activeStep}>
                     {this.state.questions.map((item, index) => (
                       <Step key={index}>
                         <StepLabel />
@@ -161,32 +224,36 @@ class Home extends React.Component {
                       <RadioGroup
                         aria-label="Gender"
                         name="gender1"
-                        style={{paddingTop:20,}}
+                        style={{ paddingTop: 20, }}
                         value={this.state.answerSelect}
                         onChange={this.handleChange}
                         error={(this.state.errorSelect !== false)}
                       >
                         {
                           activeQuestion.answers.map((item, index) => {
-                            return <FormControlLabel style={{paddingTop:5,paddingBottom:5,}} key={index + ''} value={index + ''} control={<Radio />} label={item} />
+                            return <FormControlLabel style={{ paddingTop: 5, paddingBottom: 5, }} key={index + ''} value={index + ''} control={<Radio />} label={item} />
                           })
                         }
                       </RadioGroup>
                       {this.state.errorSelect ? <FormHelperText error>{this.state.errorSelect}</FormHelperText> : null}
                     </FormControl>
                   </div>
-              </CardContent>
+                </CardContent>
 
-              <CardActions style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                {
-                  (questions.length - 1 === activeStep)
-                    ? <Button variant="contained" color="primary" onClick={readyQuestions} disabled={this.state.loading} >Готово</Button>
-                    : <Button variant="contained" onClick={nextQuestions} color="primary" disabled={this.state.loading} >Далее</Button>
+                <CardActions style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  {
+                    (questions.length - 1 === activeStep)
+                      ? <Button variant="contained" color="primary" onClick={readyQuestions} disabled={this.state.loading} >Готово</Button>
+                      : <Button variant="contained" onClick={nextQuestions} color="primary" disabled={this.state.loading} >Далее</Button>
 
-                }
-              </CardActions>
-            </Card>
-          </div>
+                  }
+                  <Button variant="contained" onClick={()=>{
+                    this.finalAll();
+                  }} color="primary" >Fin</Button>
+
+                </CardActions>
+              </Card>
+            </div>
         }
       </div>
 
@@ -197,7 +264,10 @@ class Home extends React.Component {
 
 
 function mapStateToProps(state) {
-  return { user: state.user };
+  return {
+    user: state.user,
+    selectedTheme: state.themes.selectedTheme,
+  };
 }
 
-export default connect(mapStateToProps, { logout, getUser })(Home)
+export default connect(mapStateToProps, { getUser,getUsers })(Test)

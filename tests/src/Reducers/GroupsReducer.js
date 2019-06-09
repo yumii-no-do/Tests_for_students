@@ -1,10 +1,10 @@
-import { GET_USER,IS_SIGNED_IN } from '../Actions/UserActions';
+import { GET_GROUPS,UPDATES_GROUPS } from '../Actions/GroupsActions';
 export default function (state = { loading: true }, action) {
     switch (action.type) {
-        case GET_USER:
+        case GET_GROUPS:
             return { loading: false, ...action.payload };
-        case IS_SIGNED_IN:
-            return {...action.payload };
+        case UPDATES_GROUPS:
+            return { loading: false, ...action.payload };
         default:
             return state;
     }

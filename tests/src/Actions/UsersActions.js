@@ -2,6 +2,7 @@ import { auth } from '../Firebase';
 import database from '../Firebase';
 
 
+
 export const GET_USERS = 'getUsers';
 export function getUsers(){
     return dispatch=>{
@@ -19,20 +20,3 @@ export function getUsers(){
             })
     }
 }
-
-// export function do(){
-//    
-
-// export function getUserData() {
-//     return dispatch => auth.onAuthStateChanged(user => {
-//         dispatch({
-//             type: GET_USER,
-//             payload: user
-//         });
-//     });
-// }
-
-
-
-
-

@@ -2,7 +2,7 @@ import * as firebase from 'firebase'
 import 'firebase/firestore';
 
 const config = {
-    apiKey: "apiKey",
+    apiKey: "AIzaSyBnN9WXmM7duEVFsOlRTQNF8CLDYOUI2ew",
     authDomain: "stolla-testing.firebaseapp.com",
     databaseURL: "https://stolla-testing.firebaseio.com",
     projectId: "stolla-testing",

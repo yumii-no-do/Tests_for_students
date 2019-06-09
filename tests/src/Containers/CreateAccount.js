@@ -79,27 +79,10 @@ class CreateAccount extends React.Component {
     }
     submitAccount(event) {
         event.preventDefault();
+        const { email,password,name,group } = this.state;
         this.isValide();
         if (this.state.error.all === false) {
-            this.props.createAccount(this.state.email, this.state.password)
-            .then(r=>{
-                database.collection('users').doc(r.user.uid).set({
-                    name: this.state.name,
-                    group:this.state.group,
-                    marks:{},
-                });
-            })
-            .catch(err => {
-                if(err.message === "auth/invalid-email"){
-                    this.setState({
-                    error: {
-                        ...this.state.error,
-                        email:'Не верный формат email'
-                    }
-                });
-                }
-                
-            });
+            this.props.createAccount(email,password,name,group);
         }
 
     }

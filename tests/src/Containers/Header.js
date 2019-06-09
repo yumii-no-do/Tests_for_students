@@ -50,7 +50,7 @@ class Header extends React.Component {
                             color: '#fff',
                         }}
                             onClick={() => {
-                                history.replace('/Statistic');
+                                history.replace('/home/statistic');
                             }}>
                             Статистика
                         </Button>
@@ -80,7 +80,7 @@ class Header extends React.Component {
                             >
                                 <MenuItem onClick={() => {
                                     this.handleClose();
-                                    history.replace('/Profile');
+                                    history.replace('/home/profile');
                                 }}>Профиль</MenuItem>
                                 <MenuItem onClick={this.handleClickOpenDialog}>Выйти</MenuItem>
                             </Menu>

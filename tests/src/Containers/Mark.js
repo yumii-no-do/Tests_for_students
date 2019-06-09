@@ -16,15 +16,11 @@ class Mark extends React.Component {
         mark: '',
         loading: true,
     }
-    componentWillMount() {
-        this.props.getUser();
-
-    }
     componentWillReceiveProps(nextProps) {
         database.collection('users').doc(nextProps.user.uid).get()
             .then(doc => {
                 this.setState({
-                    mark: doc.data().marks[this.props.match.params.string],
+                    mark: doc.data().marks[this.props.selectedTheme],
                     loading: false,
                 })
             });
@@ -59,7 +55,10 @@ class Mark extends React.Component {
 
 
 function mapStateToProps(state) {
-    return { user: state.user };
-}
-
-export default connect(mapStateToProps, { logout, getUser })(Mark)
+    return { 
+      user: state.user ,
+      selectedTheme: state.themes.selectedTheme,
+    };
+  }
+  
+  export default connect(mapStateToProps, { })(Mark)

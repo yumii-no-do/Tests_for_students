@@ -3,6 +3,7 @@ import { Typography, Grid, Card, CardContent, CardActions, Button, TextField, Fo
 import { withStyles } from '@material-ui/core/styles';
 import { login, getUser } from '../Actions/UserActions';
 import { connect } from 'react-redux';
+import {Link} from 'react-router-dom';
 
 const styles = theme => ({
     button: {
@@ -33,14 +34,15 @@ class Login extends React.Component {
         error: false,
     }
     componentWillMount() {
-        this.props.getUser();
+        const { signedIn,history } = this.props;
+        if(signedIn === true){
+            history.replace('/');
+        }
     }
     handleChange = name => event => {
         this.setState({ [name]: event.target.value });
     }
-    handleChangeEmail = event => {
-        this.setState({ 'email': event.target.value+"@stolla.ru"});
-    }
+
     componentWillReceiveProps(nextProps) {
         if (nextProps.user.email !== undefined) {
             this.props.history.push('/');
@@ -60,18 +62,7 @@ class Login extends React.Component {
         this.isValide();
 
         if (this.state.errorAll === false) {
-            this.props.login(this.state.email, this.state.password).catch(err => {
-                console.log(err);
-                let error = {};
-                switch (err.code) {
-                    case "auth/invalid-email": error = { error: 'Не верный формат email' }; break;
-                    case "auth/user-not-found": error = { error: 'Нет записи пользователя, соответствующей этому идентификатору. Возможно, пользователь был удален.' }; break;
-                    case "auth/wrong-password": error = { error: 'Не верный пароль' }; break;
-
-                    default: error = { error: false }; break;
-                }
-                this.setState(error);
-            });
+            this.props.login(this.state.email, this.state.password)
         }
         console.log(this.state)
     }
@@ -98,12 +89,12 @@ class Login extends React.Component {
                                         label="Логин"
                                         error={this.state.errorEmail !== false}
                                         className={classes.textField}
-                                        type="text"
+                                        type="email"
                                         name="email"
                                         autoComplete="email"
                                         margin="normal"
                                         variant="outlined"
-                                        onChange={this.handleChangeEmail}
+                                        onChange={this.handleChange('email')}
                                     />
                                     {!this.state.errorEmail ? null : <FormHelperText error>{this.state.errorEmail}</FormHelperText>}
                                     <TextField
@@ -112,21 +103,23 @@ class Login extends React.Component {
                                         className={classes.textField}
                                         type="password"
                                         error={this.state.errorPassword !== false}
-                                        // name="password"
+                                        name="password"
                                         autoComplete="current-password"
                                         margin="normal"
                                         variant="outlined"
                                         onChange={this.handleChange('password')}
                                     />
-                                    {!this.state.errorPassword ? null : <FormHelperText error>{this.state.errorPassword}</FormHelperText>}
-                                    {!this.state.error ? null : <FormHelperText style={{ width: '100%' }} error>{this.state.error}</FormHelperText>}
+                                    {this.state.errorPassword && <FormHelperText error>{this.state.errorPassword}</FormHelperText>}
+                                    {this.state.error && <FormHelperText style={{ width: '100%' }} error>{this.state.error}</FormHelperText>}
                                 </form>
                             </Grid>
                         </Grid>
                     </CardContent>
                     <CardActions>
                         <Grid container justify="flex-end" >
-                            {/* <Button onClick={() => { this.props.history.push('/CreateAccount') }} color="primary">Создать аккаунт</Button> */}
+                            <Link to='/create-account'>
+                                <Button color="primary">Создать аккаунт</Button>
+                            </Link>
                             <Button onClick={this.submitLogin} variant="contained" color="primary">Войти</Button>
                         </Grid>
                     </CardActions>
@@ -136,7 +129,10 @@ class Login extends React.Component {
     }
 }
 function mapStateToProps(state) {
-    return { user: state.user };
+    return { 
+        user: state.user,
+        signedIn:state.user.isSignedIn,
+     };
 }
 export default connect(mapStateToProps, { login, getUser })(withStyles(styles)(Login))
 

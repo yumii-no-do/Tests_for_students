@@ -1,10 +1,8 @@
-import { GET_USER,IS_SIGNED_IN } from '../Actions/UserActions';
+import { GET_USERS } from '../Actions/UsersActions';
 export default function (state = { loading: true }, action) {
     switch (action.type) {
-        case GET_USER:
+            case GET_USERS:
             return { loading: false, ...action.payload };
-        case IS_SIGNED_IN:
-            return {...action.payload };
         default:
             return state;
     }

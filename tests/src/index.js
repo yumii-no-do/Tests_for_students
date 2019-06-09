@@ -5,11 +5,13 @@ import { applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import reducers from './Reducers';
 import { Provider } from 'react-redux';
-import { BrowserRouter, Switch, Route,Redirect } from 'react-router-dom';
+import { HashRouter, Switch, Route,Redirect } from 'react-router-dom';
 import Home from './Containers/Home';
 import CreateAccount from './Containers/CreateAccount';
 import Login from './Containers/Login';
+import './Firebase';
 import './App.css';
+import App from './App';
 
 // создание хранилища состояний
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
@@ -17,12 +19,6 @@ const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 // рендер приложения
 ReactDOM.render(
     <Provider store={createStoreWithMiddleware(reducers,window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())}>
-        <BrowserRouter>
-            <Switch>
-                <Route path="/Login" component={Login} />
-                <Route path="/" component={Home} />
-                <Redirect from='/Login' to='/'/>
-            </Switch>
-        </BrowserRouter>
+        <App/>
     </Provider>,
     document.getElementById('root'));
