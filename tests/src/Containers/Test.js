@@ -23,6 +23,16 @@ const style = {
 
 }
 moment().format();
+function getRandomArrayElements(arr, count) {
+  var shuffled = arr.slice(0), i = arr.length, min = i - count, temp, index;
+  while (i-- > min) {
+      index = Math.floor((i + 1) * Math.random());
+      temp = shuffled[index];
+      shuffled[index] = shuffled[i];
+      shuffled[i] = temp;
+  }
+  return shuffled.slice(min);
+}
 
 class Test extends React.Component {
   state = {
@@ -55,13 +65,14 @@ class Test extends React.Component {
       .then(doc => {
         if (doc.exists) {
           const data = doc.data();
+          let coolQ = data.questions.sort( function() { return 0.5 - Math.random() } );
+          coolQ = getRandomArrayElements(coolQ, data.size) ;
           this.setState({
             name: data.name,
-            questions: data.questions,
+            questions: coolQ,
             timer:+data.timer*60,
             timeOut:+data.timer*60*1000,
           })
-
         } else {
           this.setState({ error: "Тест не найден" })
         }

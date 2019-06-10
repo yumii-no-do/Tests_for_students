@@ -1,26 +1,22 @@
 import React from 'react';
-import { logout, getUser } from '../Actions/UserActions';
+import { getUser } from '../Actions/UserActions';
 import { getThemes, createTheme, updateTheme } from '../Actions/ThemesActions';
 import { getGroups,updateGroups } from '../Actions/GroupsActions';
 import { connect } from 'react-redux';
-import database from '../Firebase';
 import Paper from '@material-ui/core/Paper';
 import AppBar from '@material-ui/core/AppBar';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import Tooltip from '@material-ui/core/Tooltip';
-import AutoTable from '../Components/AutoTable';
 import Loading from '../Components/Loading';
 import classNames from 'classnames';
-import { withStyles, MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import { Typography, Toolbar, IconButton, FormControlLabel, TextField, RadioGroup, FormControl, Radio, DialogTitle, DialogActions, Button, } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
+import { Typography, IconButton,RadioGroup, TextField, FormControl, Radio, Button, } from '@material-ui/core';
 import Add from '@material-ui/icons/Add';
-import NavigateNext from '@material-ui/icons/NavigateNext';
 import CreateTheme from '../Components/CreateTheme';
 import CreateQuestion from '../Components/CreateQuestion';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MoreVert from '@material-ui/icons/MoreVert';
-import FormHelperText from '@material-ui/core/FormHelperText';
 
 const styles = theme => ({
     margin: {
@@ -136,7 +132,7 @@ class Settings extends React.Component {
     };
     handelCreateTheme = (object) => {
         console.log('home', object);
-        this.props.createTheme(object.name, [], object.groupsSelected);
+        this.props.createTheme(object.name, [], object.groupsSelected,object.timer,object.size);
         this.props.getThemes();
     };
     handleClickOpenCreateQuestion = () => {
@@ -286,7 +282,7 @@ class Settings extends React.Component {
         return (
             <div className='border-rigth' style={{ flexGrow: 1, maxWidth: '20%', overflow: 'auto', }}>
                 <div className='panel-header border-bottom'>
-                    <Typography variant="subtitle1" component="span" color="textSecondary">Вопросы поданной теме</Typography>
+                    <Typography variant="subtitle1" component="span" color="textSecondary">Вопросы по данной теме</Typography>
                 </div>
                 {
                     this.state.selectTheme === '' ? null :

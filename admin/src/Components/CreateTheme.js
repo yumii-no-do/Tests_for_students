@@ -3,30 +3,16 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import PropTypes from 'prop-types';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { getThemes, createTheme } from '../Actions/ThemesActions';
-import { getGroups } from '../Actions/GroupsActions';
-import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
-import classNames from 'classnames';
-import Typography from '@material-ui/core/Typography';
-import NoSsr from '@material-ui/core/NoSsr';
-import Paper from '@material-ui/core/Paper';
-import Chip from '@material-ui/core/Chip';
-import MenuItem from '@material-ui/core/MenuItem';
-import CancelIcon from '@material-ui/icons/Cancel';
 import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import Checkbox from '@material-ui/core/Checkbox';
 import { emphasize } from '@material-ui/core/styles/colorManipulator';
-// import { Select } from 'react-select';
 const styles = theme => ({
     root: {
         flexGrow: 1,
@@ -83,8 +69,21 @@ class CreateTheme extends React.Component {
         groups: [],
         error: false,
         name: '',
+        timer: 30,
+        size: 10,
     };
-
+    componentWillUnmount() {
+        this.setState({
+            single: null,
+            multi: null,
+            loading: true,
+            groups: [],
+            error: false,
+            name: '',
+            timer: 30,
+            size: 10,
+        })
+    }
     handleChange = name => event => {
         this.setState({
             [name]: event.target.value,
@@ -107,6 +106,8 @@ class CreateTheme extends React.Component {
 
         const res = {
             name: this.state.name,
+            timer: this.state.timer,
+            size: this.state.size,
             groupsSelected,
         }
         console.log(res);
@@ -124,7 +125,7 @@ class CreateTheme extends React.Component {
                 this.props.handleClose();
             }
         }
-        
+
 
 
 
@@ -152,7 +153,7 @@ class CreateTheme extends React.Component {
             >
                 <DialogTitle id="form-dialog-title">Добавление новой темы</DialogTitle>
                 <DialogContent>
-                    <DialogContentText>В дальнейшем данное назване можно будет изменить</DialogContentText>
+                    <DialogContentText>В дальнейшем данное название можно будет изменить</DialogContentText>
                     <FormControl fullWidth component="fieldset" className={classes.formControl}>
                         <FormLabel component="legend"></FormLabel>
                         <TextField
@@ -164,6 +165,28 @@ class CreateTheme extends React.Component {
                             fullWidth
                             onChange={this.handleChange('name')}
                         />
+
+                        <div style={{display:'flex'}}>
+                            <TextField
+                                value={this.state.timer}
+                                margin="dense"
+                                id="timer"
+                                label="Количество минут"
+                                type="number"
+                                fullWidth
+                                onChange={this.handleChange('timer')}
+                            />
+                            <TextField
+                                value={this.state.size}
+                                margin="dense"
+                                id="timer"
+                                label="Количество вопросов"
+                                type="number"
+                                fullWidth
+                                onChange={this.handleChange('size')}
+                            />
+                        </div>
+
                         <FormLabel style={{ marginTop: 40 }} component="legend">Группы которые будут иметь к ней доступ</FormLabel>
                         <FormGroup>
                             {

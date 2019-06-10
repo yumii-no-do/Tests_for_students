@@ -1,6 +1,5 @@
 import React from 'react';
-import { Typography, AppBar, Toolbar, IconButton, Menu, Dialog, MenuItem, DialogTitle, DialogActions, Button, } from '@material-ui/core';
-import AccountCircle from '@material-ui/icons/AccountCircle';
+import { Typography, AppBar, Toolbar, Dialog, DialogTitle, DialogActions, Button, } from '@material-ui/core';
 import { logout, getUser } from '../Actions/UserActions';
 import { connect } from 'react-redux';
 

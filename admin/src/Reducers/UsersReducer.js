@@ -1,4 +1,4 @@
-import { GET_USERS } from '../Actions/UserActions';
+import { GET_USERS } from '../Actions/UsersActions';
 export default function (state = { loading: true }, action) {
     switch (action.type) {
             case GET_USERS:

@@ -5,31 +5,16 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import PropTypes from 'prop-types';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { getThemes, createTheme } from '../Actions/ThemesActions';
-import { getGroups } from '../Actions/GroupsActions';
-import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
 import Typography from '@material-ui/core/Typography';
-import NoSsr from '@material-ui/core/NoSsr';
 import IconButton from '@material-ui/core/IconButton';
-import Chip from '@material-ui/core/Chip';
-import MenuItem from '@material-ui/core/MenuItem';
-import CancelIcon from '@material-ui/icons/Cancel';
 import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import RadioGroup from '@material-ui/core/RadioGroup';
 import Radio from '@material-ui/core/Radio';
-import { emphasize } from '@material-ui/core/styles/colorManipulator';
 import Add from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
-import Checkbox from '@material-ui/core/Checkbox';
-// import { Select } from 'react-select';
 const styles = theme => ({
     cssUnderLine: {
         '&:before': {

@@ -18,12 +18,14 @@ export function getThemes() {
     };
 }
 
-export function createTheme(name, questions=[],access=[]) {
+export function createTheme(name, questions=[],access=[],timer,size) {
     return dispatch => {
         database.collection('themes').add({
             name: name,
             questions:questions,
             access:access,
+            timer:timer,
+            size:size
         })
     }
 }
