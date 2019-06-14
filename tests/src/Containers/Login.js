@@ -3,7 +3,7 @@ import { Typography, Grid, Card, CardContent, CardActions, Button, TextField, Fo
 import { withStyles } from '@material-ui/core/styles';
 import { login, getUser } from '../Actions/UserActions';
 import { connect } from 'react-redux';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const styles = theme => ({
     button: {
@@ -30,19 +30,18 @@ class Login extends React.Component {
         password: '',
         errorEmail: false,
         errorPassword: false,
-        errorAll: false,
+        errorAll: true,
         error: false,
     }
     componentWillMount() {
-        const { signedIn,history } = this.props;
-        if(signedIn === true){
+        const { signedIn, history } = this.props;
+        if (signedIn === true) {
             history.replace('/');
         }
     }
     handleChange = name => event => {
         this.setState({ [name]: event.target.value });
     }
-
     componentWillReceiveProps(nextProps) {
         if (nextProps.user.email !== undefined) {
             this.props.history.push('/');
@@ -60,7 +59,6 @@ class Login extends React.Component {
     submitLogin = (event) => {
         event.preventDefault();
         this.isValide();
-
         if (this.state.errorAll === false) {
             this.props.login(this.state.email, this.state.password)
         }
@@ -94,9 +92,9 @@ class Login extends React.Component {
                                         autoComplete="email"
                                         margin="normal"
                                         variant="outlined"
+                                        helperText={this.state.errorEmail}
                                         onChange={this.handleChange('email')}
                                     />
-                                    {!this.state.errorEmail ? null : <FormHelperText error>{this.state.errorEmail}</FormHelperText>}
                                     <TextField
                                         id="outlined-password-input"
                                         label="Пароль"
@@ -106,17 +104,17 @@ class Login extends React.Component {
                                         name="password"
                                         autoComplete="current-password"
                                         margin="normal"
+                                        helperText={this.state.errorPassword}
                                         variant="outlined"
                                         onChange={this.handleChange('password')}
                                     />
-                                    {this.state.errorPassword && <FormHelperText error>{this.state.errorPassword}</FormHelperText>}
-                                    {this.state.error && <FormHelperText style={{ width: '100%' }} error>{this.state.error}</FormHelperText>}
+                                    <FormHelperText style={{ width: '100%' }} error>{this.props.user.error}</FormHelperText>
                                 </form>
                             </Grid>
                         </Grid>
                     </CardContent>
-                    <CardActions style={{padding:'0 16px 16px'}}>
-                        <Grid container justify="space-between"  style={{margin:'0 8px'}}>
+                    <CardActions style={{ padding: '0 16px 16px' }}>
+                        <Grid container justify="space-between" style={{ margin: '0 8px' }}>
                             <Link to='/create-account'>
                                 <Button color="primary">Создать аккаунт</Button>
                             </Link>
@@ -129,10 +127,10 @@ class Login extends React.Component {
     }
 }
 function mapStateToProps(state) {
-    return { 
+    return {
         user: state.user,
-        signedIn:state.user.isSignedIn,
-     };
+        signedIn: state.user.isSignedIn,
+    };
 }
 export default connect(mapStateToProps, { login, getUser })(withStyles(styles)(Login))
 
