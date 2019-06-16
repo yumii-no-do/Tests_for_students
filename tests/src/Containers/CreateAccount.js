@@ -82,7 +82,6 @@ class CreateAccount extends React.Component {
         const { email, password, name, group } = this.state;
         this.isValide();
         if (this.state.error.all === false) {
-            console.log(email, password, name, group)
             this.props.createAccount(email, password, name, group);
         }
 

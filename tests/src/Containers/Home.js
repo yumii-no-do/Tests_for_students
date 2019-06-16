@@ -16,7 +16,6 @@ import { getAllData } from '../Actions/InitAction';
 class Home extends React.Component {
 
     componentWillMount() {
-        console.log('Home','componentWillMount');
         
         const { user, usersLoading, themesLoading, groupsLoading, getUser } = this.props;
         const loadedAll = usersLoading || user.loading || themesLoading || groupsLoading;
@@ -29,7 +28,7 @@ class Home extends React.Component {
         }
     }
 componentWillUnmount(){
-    console.log('Home','componentWillUnmount');
+    
         
 }
 

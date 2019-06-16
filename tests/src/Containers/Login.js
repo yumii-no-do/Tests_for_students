@@ -62,7 +62,6 @@ class Login extends React.Component {
         if (this.state.errorAll === false) {
             this.props.login(this.state.email, this.state.password)
         }
-        console.log(this.state)
     }
     render() {
         const { classes } = this.props;

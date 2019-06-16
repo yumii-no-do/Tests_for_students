@@ -1,7 +1,7 @@
 import React from 'react';
 import { getUser } from '../Actions/UserActions';
-import { getThemes, createTheme, updateTheme } from '../Actions/ThemesActions';
-import { getGroups,updateGroups } from '../Actions/GroupsActions';
+import { getThemes, createTheme, deleteTheme, updateTheme } from '../Actions/ThemesActions';
+import { getGroups, updateGroups } from '../Actions/GroupsActions';
 import { connect } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
 import AppBar from '@material-ui/core/AppBar';
@@ -11,12 +11,14 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Loading from '../Components/Loading';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
-import { Typography, IconButton,RadioGroup, TextField, FormControl, Radio, Button, } from '@material-ui/core';
+import { Typography, MenuList, MenuItem, Snackbar, Menu, IconButton, RadioGroup, TextField, FormControl, Radio, Button, } from '@material-ui/core';
 import Add from '@material-ui/icons/Add';
 import CreateTheme from '../Components/CreateTheme';
+import EditTheme from '../Components/EditTheme';
 import CreateQuestion from '../Components/CreateQuestion';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MoreVert from '@material-ui/icons/MoreVert';
+import StudentsManager from '../Components/StudentsManager';
 
 const styles = theme => ({
     margin: {
@@ -64,7 +66,7 @@ const styles = theme => ({
 class Settings extends React.Component {
     state = {
         mark: '',
-        value: 0,
+        value: 0, //default 0
         loading: true,
         table: [[]],
         questionTitle: '2+2',
@@ -72,12 +74,15 @@ class Settings extends React.Component {
         selectQuestionId: null,
         selectQuestion: '',
         isOpenCteateTheme: false,
+        editThemeDefault: undefined,
         isOpenCreateQuestion: false,
+        isOpenEditTheme: false,
         themes: [],
         groups: {
             list: ["1", "2"],
             loading: true,
-        }
+        },
+        snackbarIsOpen: false,
     }
     render() {
         return (
@@ -132,7 +137,7 @@ class Settings extends React.Component {
     };
     handelCreateTheme = (object) => {
         console.log('home', object);
-        this.props.createTheme(object.name, [], object.groupsSelected,object.timer,object.size);
+        this.props.createTheme(object.name, [], object.groupsSelected, object.timer, object.size);
         this.props.getThemes();
     };
     handleClickOpenCreateQuestion = () => {
@@ -186,7 +191,7 @@ class Settings extends React.Component {
             },
         })
     }
-    handleAddGroup = ()=> {
+    handleAddGroup = () => {
         let groups = this.state.groups.list.slice();
         groups.push('')
         this.setState({
@@ -205,7 +210,7 @@ class Settings extends React.Component {
             },
         })
     };
-    
+
     handleDeleteQuestion = index => event => {
         let questions = this.state.selectQuestion.answers.slice();
         questions.splice(index, 1);
@@ -240,7 +245,27 @@ class Settings extends React.Component {
             questions: this.state.selectTheme.questions,
         })
         this.props.getThemes();
-        alert('Сохранено')
+        this.setState({
+            snackbarIsOpen: 'Сохранено'
+        })
+    }
+    handleThemesMenuClick = (e) => {
+        this.setState({
+            anchorEl: e.currentTarget
+        })
+    }
+    handleQuestionsMenuClick = e => {
+        this.setState({
+            anchorEl2: e.currentTarget
+        })
+    }
+
+    handleThemesMenuClose = e => {
+        this.setState({
+            anchorEl: null,
+            anchorEl2: null,
+
+        })
     }
     _renderThemes = () => {
         const { classes } = this.props;
@@ -248,11 +273,27 @@ class Settings extends React.Component {
             <div className='border-rigth' style={{ flexGrow: 1, maxWidth: '20%', overflow: 'auto', }}>
                 <div className='panel-header border-bottom' style={{ padding: 4, display: 'flex', justifyContent: 'space-between', }}>
                     <Typography style={{ margin: 6 }} variant="subtitle1" component="span" color="textSecondary">Темы тестов</Typography>
-                    <Tooltip title="Параметры тем" aria-label="Add" enterDelay={500} leaveDelay={200}>
-                        <IconButton style={{ padding: 8 }} aria-label="More">
-                            <MoreVert fontSize="small" />
-                        </IconButton>
-                    </Tooltip>
+                    {
+                        this.state.selectTheme != "" && <Tooltip title="Параметры тем" aria-label="Add" enterDelay={500} leaveDelay={200}>
+                            <IconButton onClick={this.handleThemesMenuClick} style={{ padding: 8 }} aria-label="More">
+                                <MoreVert fontSize="small" />
+                            </IconButton>
+                        </Tooltip>
+                    }
+                    <Menu
+                        id="simple-menu"
+                        anchorEl={this.state.anchorEl}
+                        keepMounted
+                        open={Boolean(this.state.anchorEl)}
+                        onClose={this.handleThemesMenuClose}
+                    >
+                        {/* <Tooltip title="Изменить выбранную тему" placement="right" aria-label="Add">
+                            <MenuItem onClick={this.handleThemesEdit}>Изменить</MenuItem>
+                        </Tooltip> */}
+                        <Tooltip title="Удалить выбранную тему" placement="right" aria-label="Add">
+                            <MenuItem onClick={this.handleThemesDelete}>Удалить</MenuItem>
+                        </Tooltip>
+                    </Menu>
                 </div>
                 <div className='panel-container'>
                     <Button color="primary" onClick={this.handleClickOpenCreateTheme} className={classNames(classes.add)}>
@@ -277,13 +318,101 @@ class Settings extends React.Component {
 
         )
     }
+    handleThemesEdit = () => {
+        this.handleThemesMenuClose();
+        this.setState({
+            isOpenEditTheme: true,
+            editThemeDefault: this.state.selectTheme
+        })
+    }
+    handleThemesDelete = () => {
+        console.log('handleThemesDelete');
+
+        this.handleThemesMenuClose();
+        let r = window.confirm("Вы точно хотите удалить данную тему?");
+        if (r) {
+            const reThemes = this.state.themes.filter(item => {
+                return item.id !== this.state.selectTheme.id
+            })
+            this.setState({
+                themes: reThemes
+            })
+            this.props.deleteTheme(this.state.selectTheme.id)
+        }
+        this.setState({
+            questionTitle: '2+2',
+            selectTheme: '',
+            selectQuestionId: null,
+            selectQuestion: '',
+            isOpenCteateTheme: false,
+            editThemeDefault: undefined,
+            isOpenCreateQuestion: false,
+            isOpenEditTheme: false,
+        })
+    }
+
+    handleQuestionDelete = () => {
+        this.handleThemesMenuClose();
+        let r = window.confirm("Вы точно хотите удалить данный вопрос?");
+        if (r) {
+            const reTheme = this.state.selectTheme.questions.filter((item, index) => {
+                return index !== this.state.selectQuestionId
+            })
+            const newThemes = this.state.themes.map(item => {
+                if (item.id === this.state.selectTheme.id) {
+                    return {
+                        ...this.state.selectTheme,
+                        questions: reTheme
+                    }
+
+
+                } else {
+                    return item
+                }
+            })
+            this.setState({
+                themes: newThemes,
+                selectTheme: {
+                    ...this.state.selectTheme,
+                    questions: reTheme
+                }
+            })
+            console.log(reTheme, newThemes);
+
+            // this.props.deleteTheme(this.state.selectTheme.id)
+        }
+    }
     _renderQuestion = () => {
         const { classes } = this.props;
         return (
+
             <div className='border-rigth' style={{ flexGrow: 1, maxWidth: '20%', overflow: 'auto', }}>
-                <div className='panel-header border-bottom'>
-                    <Typography variant="subtitle1" component="span" color="textSecondary">Вопросы по данной теме</Typography>
+                <div className='panel-header border-bottom' style={{ padding: 4, display: 'flex', justifyContent: 'space-between', }}>
+                    <Typography variant="subtitle1" component="span" color="textSecondary" style={{ marginTop: '5px' }}>Вопросы по данной теме</Typography>
+                    {
+                        this.state.selectQuestion != "" && <Tooltip title="Параметры тем" aria-label="Add" enterDelay={500} leaveDelay={200}>
+                            <IconButton onClick={this.handleQuestionsMenuClick} style={{ padding: 8 }} aria-label="More">
+                                <MoreVert fontSize="small" />
+                            </IconButton>
+                        </Tooltip>
+                    }
                 </div>
+
+                <Menu
+
+                    id="simple-menu"
+                    anchorEl={this.state.anchorEl2}
+                    keepMounted
+                    open={Boolean(this.state.anchorEl2)}
+                    onClose={this.handleThemesMenuClose}
+                >
+                    {/* <Tooltip title="Изменить выбранную тему" placement="right" aria-label="Add">
+                            <MenuItem onClick={this.handleThemesEdit}>Изменить</MenuItem>
+                        </Tooltip> */}
+                    <Tooltip title="Удалить выбранный вопрос" placement="right" aria-label="Add">
+                        <MenuItem onClick={this.handleQuestionDelete}>Удалить</MenuItem>
+                    </Tooltip>
+                </Menu>
                 {
                     this.state.selectTheme === '' ? null :
                         <div className='panel-container'>
@@ -301,7 +430,7 @@ class Settings extends React.Component {
                                             style={this.state.selectQuestionId === index ? { background: 'rgb(247, 247, 247)' } : {}}
                                             color={this.state.selectQuestionId === index ? "secondary" : "default"}
                                         >
-                                            {question.title.substr(0, 33)}
+                                            {question.title.substr(0, 33) + '...'}
                                         </Button>
                                     )
                                 })
@@ -385,26 +514,34 @@ class Settings extends React.Component {
                                                             </IconButton>
                                                         </Tooltip>
                                                     </div>
-                                                    {/* {!this.state.questions[index].error ? null : <FormHelperText error>{this.state.questions[index].error}</FormHelperText>} */}
-
                                                 </div>
                                             )
                                         })
-
                                     }
-
-                                    {/* <Button color="primary" fullWidth style={{justifyContent: 'flex-start',textAlign: 'start'}} onClick={this.handleAddQuestion.bind(this)} className={classNames(classes.add)}><Add /> Добавить вариант ответа</Button> */}
-
                                     <Button color="primary" onClick={this.handleAddQuestion.bind(this)} className={classNames(classes.add)}><Add /> Добавить вариант ответа</Button>
                                 </RadioGroup>
                             </FormControl>
                         </div>
                     </div>
-
                 }
             </div>
-
         )
+    }
+    handleSnackbarClose = () => {
+        this.setState({
+            snackbarIsOpen: false
+        })
+    }
+
+
+
+    handleCloseEditTheme = () => {
+        this.setState({ isOpenEditTheme: false });
+    }
+    handelEditTheme = (object) => {
+        console.log('home', object);
+        // this.props.updateTheme(this.state.selectTheme.id,object);
+        this.props.getThemes();
     }
     _renderElements = () => {
         const { value } = this.state;
@@ -422,9 +559,23 @@ class Settings extends React.Component {
                     >
                         <Tab label="Темы" />
                         <Tab label="Группы" />
-                        <Tab label="Настройка приложения" />
+                        <Tab label="Студенты" />
                     </Tabs>
                 </AppBar>
+                <Snackbar
+                    open={this.state.snackbarIsOpen}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    onClose={this.handleSnackbarClose}
+                    autoHideDuration={5000}
+                    ContentProps={{
+                        'aria-describedby': 'message-id',
+                    }}
+                    message={<span id="message-id">{this.state.snackbarIsOpen}</span>}
+
+                />
                 {value === 0 &&
                     <React.Fragment>
                         <Paper style={{ overflowX: 'auto', width: '100%', margin: 24, marginTop: 48, maxWidth: 1500, height: 'calc(100vh - 168px )', }}>
@@ -442,6 +593,15 @@ class Settings extends React.Component {
                                 groups={this.state.groups.list}
                             /> : null
                         }
+                        {/* {(this.state.groups.loading == false) ?
+                            <EditTheme
+                                defaultData={this.state.editThemeDefault}
+                                open={this.state.isOpenEditTheme}
+                                handleClose={this.handleCloseEditTheme}
+                                handelData={this.handelEditTheme}
+                                groups={this.state.groups.list}
+                            /> : null
+                        } */}
                         {console.log(this.state.groups)}
                         <CreateQuestion
                             open={this.state.isOpenCreateQuestion}
@@ -451,77 +611,77 @@ class Settings extends React.Component {
                     </React.Fragment>
                 }
                 {value === 1 && this._groupEditor()}
-                {value === 2 && 
-                    <React.Fragment>
-                        app sett
-                    </React.Fragment>
-                }
+                {value === 2 && <StudentsManager />}
 
             </div >
 
         )
     }
 
-    saveGroups = ()=>{
+
+
+    saveGroups = () => {
         this.props.updateGroups(
             this.state.groups.list
         )
-        alert("Обновлено")
+        this.setState({
+            snackbarIsOpen: "Обновлено"
+        })
     }
 
-    _groupEditor(){
+    _groupEditor() {
         const { classes } = this.props;
-        return( 
-            <Paper style={{ width: '100%', margin: '48px 24px 24px',padding: '20px', marginTop: 48, maxWidth: 800, }}>
-            <FormControl component="fieldset" style={{ flexGrow: 1, width: '100%' }}>
-            <RadioGroup
-                aria-label="Gender"
-                name="gender1"
-            >
-                {
-                    this.state.groups.list.map((item, index) => {
-                        return (
-                            <div>
-                                <div key={index} className={classes.radioItem}>
-                                    <TextField
-                                        multiline
-                                        id="standard-name"
-                                        value={item}
-                                        onChange={this.handleGroup(index)}
-                                        margin="none"
-                                        className={classes.radioSelect}
-                                        InputProps={{
-                                            classes: {
-                                                underline: classes.cssUnderLine,
-                                            }
-                                        }}
-                                        // error={this.state.questions[index].error !== false}
-                                        fullWidth
-                                        placeholder='Название группы'
-                                    />
-                                    <Tooltip title="Удалить данную группу" aria-label="Add" enterDelay={500} leaveDelay={200}>
-                                        <IconButton onClick={this.handleDeleteGroup(index)} aria-label="Delete">
-                                            <DeleteIcon fontSize="small" />
-                                        </IconButton>
-                                    </Tooltip>
-                                </div>
-                                {/* {!this.state.questions[index].error ? null : <FormHelperText error>{this.state.questions[index].error}</FormHelperText>} */}
+        return (
+            <Paper style={{ width: '100%', margin: '48px 24px 24px', padding: '20px', marginTop: 48, maxWidth: 800, }}>
+                <FormControl component="fieldset" style={{ flexGrow: 1, width: '100%' }}>
+                    <RadioGroup
+                        aria-label="Gender"
+                        name="gender1"
+                    >
+                        {
+                            this.state.groups.list.map((item, index) => {
+                                return (
+                                    <div>
+                                        <div key={index} className={classes.radioItem}>
+                                            <TextField
+                                                multiline
+                                                id="standard-name"
+                                                value={item}
+                                                onChange={this.handleGroup(index)}
+                                                margin="none"
+                                                className={classes.radioSelect}
+                                                InputProps={{
+                                                    classes: {
+                                                        underline: classes.cssUnderLine,
+                                                    }
+                                                }}
+                                                // error={this.state.questions[index].error !== false}
+                                                fullWidth
+                                                placeholder='Название группы'
+                                            />
+                                            <Tooltip title="Удалить данную группу" aria-label="Add" enterDelay={500} leaveDelay={200}>
+                                                <IconButton onClick={this.handleDeleteGroup(index)} aria-label="Delete">
+                                                    <DeleteIcon fontSize="small" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </div>
+                                        {/* {!this.state.questions[index].error ? null : <FormHelperText error>{this.state.questions[index].error}</FormHelperText>} */}
 
-                            </div>
-                        )
-                    })
+                                    </div>
+                                )
+                            })
 
-                }
+                        }
 
-                {/* <Button color="primary" fullWidth style={{justifyContent: 'flex-start',textAlign: 'start'}} onClick={this.handleAddQuestion.bind(this)} className={classNames(classes.add)}><Add /> Добавить вариант ответа</Button> */}
+                        {/* <Button color="primary" fullWidth style={{justifyContent: 'flex-start',textAlign: 'start'}} onClick={this.handleAddQuestion.bind(this)} className={classNames(classes.add)}><Add /> Добавить вариант ответа</Button> */}
 
-                <Button color="primary" onClick={this.handleAddGroup} className={classNames(classes.add)}><Add /> Добавить группу</Button>
-                <Button onClick={this.saveGroups} variant="contained" color="primary">
-                                Сохранить
+                        <Button color="primary" onClick={this.handleAddGroup} className={classNames(classes.add)}><Add /> Добавить группу</Button>
+                        <Button onClick={this.saveGroups} variant="contained" color="primary">
+                            Сохранить
                     </Button>
-            </RadioGroup>
-        </FormControl>
-        </Paper>
+                    </RadioGroup>
+                </FormControl>
+            </Paper>
         )
     }
 
@@ -533,6 +693,7 @@ function mapStateToProps(state) {
         user: state.user,
         themes: state.themes,
         groups: state.groups,
+        users: state.users,
     };
 }
-export default connect(mapStateToProps, { getGroups, getUser, getThemes, updateTheme, createTheme,updateGroups })(withStyles(styles)(Settings))
+export default connect(mapStateToProps, { getGroups, getUser, getThemes, deleteTheme, updateTheme, createTheme, updateGroups })(withStyles(styles)(Settings))

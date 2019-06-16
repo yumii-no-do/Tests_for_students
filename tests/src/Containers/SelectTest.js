@@ -17,7 +17,6 @@ class SelectTest extends React.Component {
         loading: true,
     }
     componentWillMount() {
-        console.log('SelectTest','componentWillMount');
         
 
         this.props.getUsers();
@@ -56,7 +55,6 @@ class SelectTest extends React.Component {
 
     }
     componentWillUnmount(){
-        console.log('SelectTest','componentWillUnmount');
         
 
         this.setState({
@@ -74,7 +72,6 @@ class SelectTest extends React.Component {
     render() {
         
         const themesList = this.props.themesList || this.state.themesList;
-        console.log(themesList)
         return (
             this.state.loading
                 ? <Loading />

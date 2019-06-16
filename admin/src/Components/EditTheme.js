@@ -61,7 +61,7 @@ const styles = theme => ({
     },
 });
 
-class CreateTheme extends React.Component {
+class EditTheme extends React.Component {
     state = {
         single: null,
         multi: null,
@@ -72,14 +72,6 @@ class CreateTheme extends React.Component {
         timer: 30,
         size: 10,
     };
-    // componentWillMount(){
-    //     console.log(this.props.defaultData);
-    //     if(this.props.defaultData != false){
-    //         console.log(this.props.defaultData);
-            
-    //         // this.setState(this.props.defaultData)
-    //     }
-    // }
     componentWillUnmount() {
         this.setState({
             single: null,
@@ -105,7 +97,6 @@ class CreateTheme extends React.Component {
         });
     };
     handleAdd() {
-
 
         let groupsSelected = [];
         this.state.groups.forEach((item, index) => {
@@ -134,26 +125,14 @@ class CreateTheme extends React.Component {
             }
         }
 
-    }
-    componentDidMount(){
-        console.log('componentDidMount');
-       
-    }
-    componentDidUpdate(){
-        console.log('componentDidUpdate');
-       
-    }
-    componentWillMount(){
-        console.log('componentWillMount');
-        
-    }
-    componentWillReceiveProps(){
-        
-    }
 
+
+
+
+    }
     render() {
-        const { classes, theme} = this.props;
-        
+        const { classes, theme } = this.props;
+       
         const selectStyles = {
             input: base => ({
                 ...base,
@@ -166,7 +145,7 @@ class CreateTheme extends React.Component {
 
         return (
 
-            <Dialog
+            this.props.defaultData &&  <Dialog
                 open={this.props.open}
                 onClose={this.props.handleClose}
                 aria-labelledby="form-dialog-title"
@@ -243,4 +222,4 @@ class CreateTheme extends React.Component {
 }
 
 
-export default (withStyles(styles)(CreateTheme))
+export default (withStyles(styles)(EditTheme))

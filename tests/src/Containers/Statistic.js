@@ -30,7 +30,6 @@ class Statistic extends React.Component {
                 })
             })
             .then(() => {
-                console.log(listUsers);
                 database.collection('groups').doc('groupList').get()
                     .then(list => {
                         groupData = list.data();
@@ -77,12 +76,6 @@ class Statistic extends React.Component {
                                 const tabs = groupList.map((item, index) => {
                                     return listUsersWithGroup[index].length>0 ? <Tab label={item} key={index} />: null;
                                 })
-                                console.log({
-                                    listUsersWithGroup,
-                                    groupList,
-                                    themeListId,
-                                    tabs,
-                                });
                                 
                                 this.setState({
                                     listUsersWithGroup,

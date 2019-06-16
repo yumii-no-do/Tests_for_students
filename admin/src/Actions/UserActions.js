@@ -141,14 +141,17 @@ export function userVerification(){
 
 export const USER_UPDATE = 'userUpdate';
 export function userUpdate(uid,updatedData){
-    dispatch=>{
+    
+    return dispatch=>{
         database.collection('users').doc(uid).update(updatedData)
         .then(value=>{ 
+            console.log(value);
+            
           dispatch({
             type:USER_UPDATE,
+            
         })
-        // dispatch(getUser());
-        // dispatch(getUsers()); 
+        window.location.reload();
         })
         
     }

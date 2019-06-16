@@ -156,7 +156,6 @@ class Test extends React.Component {
     database.collection('users').doc(this.props.user.uid).update({
       ["marks." + this.props.selectedTheme]: mark
     }).then((e) => {
-      console.log(e);
       this.props.getUser();
       this.props.getUsers();
     })
@@ -198,7 +197,6 @@ class Test extends React.Component {
       database.collection('users').doc(this.props.user.uid).update({
         ["marks." + this.props.selectedTheme]: mark
       }).then((e) => {
-        console.log(e);
         this.props.getUser();
         this.props.getUsers();
       })

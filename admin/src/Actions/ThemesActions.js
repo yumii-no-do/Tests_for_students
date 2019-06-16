@@ -34,8 +34,12 @@ export function updateTheme(id,object) {
         database.collection('themes').doc(id).update(object)
     }
 }
-export function deleteTheme(id,object) {
+export function deleteTheme(id,allThemes) {
     return dispatch => {
-        database.collection('themes').doc(id).delete()
+        database.collection('themes').doc(id).delete().finally(()=>{
+            console.log('finally');
+            
+        })
+        
     }
 }

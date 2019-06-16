@@ -63,7 +63,6 @@ export function login(email, password) {
     return dispatch => {
         auth.signInWithEmailAndPassword(email, password)
         .catch(err => {
-            console.log(err);
             let error = {};
             switch (err.code) {
                 case "auth/invalid-email": error = { error: 'Недействительная электронная почта' }; break;
@@ -92,14 +91,10 @@ export function createAccount(email, password, name, group) {
     return dispatch => {
         auth.createUserWithEmailAndPassword(email, password)
             .then(result => {
-                console.log(result)
                 result.user.sendEmailVerification().then(function () {
-                    console.log("Email sent.");
                 })
                     .catch(function (error) {
                         // An error happened.
-                        console.log("An error happened.");
-                        console.log(error);
                     });
                 database.collection('users').doc(result.user.uid).set({
                     name: name,
@@ -130,7 +125,6 @@ export function createAccount(email, password, name, group) {
                 const err = {
                     error: message
                 }
-                console.log(err, e)
                 dispatch({
                     type: CREATE_ACCOUNT_ERROR,
                     payload: err
@@ -146,12 +140,8 @@ export const USER_VEFIFICATION = 'userVerification';
 export function userVerification() {
     return dispatch => {
         auth.currentUser.sendEmailVerification().then(function () {
-            console.log("Email sent.");
             dispatch(getUser)
         }).catch(function (error) {
-            // An error happened.
-            console.log("An error happened.");
-            console.log(error);
         });
         dispatch({
             type: USER_VEFIFICATION
