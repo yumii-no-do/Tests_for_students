@@ -176,16 +176,12 @@ class Statistic extends React.Component {
                                     for (var key in item.marks) {
                                         counter++;
                                         sr = sr + (+item.marks[key]);
-                                        console.log(sr);
 
                                     }
                                     let mmarks = themeListId[value].map(a => {
                                         return item.marks[a.id] === undefined ? { [a.id]: "-" } : { [a.id]: item.marks[a.id] }
                                     })
                                     mmarks = Object.assign(...mmarks)
-                                    console.log(
-                                        mmarks
-                                    );
 
                                     return {
                                         fio: item.name,
