@@ -37,13 +37,16 @@ class Statistic extends React.Component {
                         listUsersWithGroup = [];
                         groupList.forEach((item, index) => { listUsersWithGroup[index] = [] })
                         listUsers.forEach(item => {
-                            listUsersWithGroup[+item.doc.group].push({
+                            if(item.doc.teacherVerified){
+                                 listUsersWithGroup[+item.doc.group].push({
                                 id: item.id,
                                 groupId: +item.doc.group,
                                 group: groupList[+item.doc.group],
                                 name: item.doc.name,
                                 marks: item.doc.marks,
                             })
+                            }
+                           
                         })
                     })
                     .then(() => {
@@ -59,9 +62,7 @@ class Statistic extends React.Component {
                                         themeListId[+acc].push({ id: item.id, name: item.name })
                                     })
                                 })
-                                const tabs = groupList.map((item, index) => {
-                                    return <Tab label={item} key={index} />
-                                })
+                                
                                 listUsersWithGroup[this.state.value].sort(function (a, b) {
                                     if (a.name > b.name) {
                                         return 1;
@@ -72,6 +73,10 @@ class Statistic extends React.Component {
                                     // a должно быть равным b
                                     return 0;
                                 });
+                                const tabs = groupList.map((item, index) => {
+                                    return listUsersWithGroup[index].length>0 ? <Tab label={item} key={index} />: null;
+                                })
+                                
                                 this.setState({
                                     listUsersWithGroup,
                                     groupList,
