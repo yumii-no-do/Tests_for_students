@@ -60,7 +60,7 @@ export const LOGIN = 'login';
 export function login(email, password) {
     return dispatch => {
         auth.signInWithEmailAndPassword(email, password).catch(err => {
-            console.log(err);
+        
             let error = {};
             switch (err.code) {
                 case "auth/invalid-email": error = { error: 'Не верный формат email' }; break;
@@ -85,13 +85,8 @@ export function createAccount(email, password, name, group) {
     return dispatch => {
         auth.createUserWithEmailAndPassword(email, password)
             .then(result => {
-                console.log(result)
                 result.user.sendEmailVerification().then(function () {
-                    console.log("Email sent.");
                 }).catch(function (error) {
-                    // An error happened.
-                    console.log("An error happened.");
-                    console.log(error);
                 });
                 database.collection('users').doc(result.user.uid).set({
                     name: name,
@@ -125,12 +120,9 @@ export const USER_VEFIFICATION = 'userVerification';
 export function userVerification(){
     return dispatch=>{
         auth.currentUser.sendEmailVerification().then(function () {
-            console.log("Email sent.");
             dispatch(getUser)
         }).catch(function (error) {
             // An error happened.
-            console.log("An error happened.");
-            console.log(error);
         });
         dispatch({
             type:USER_VEFIFICATION
@@ -145,7 +137,6 @@ export function userUpdate(uid,updatedData){
     return dispatch=>{
         database.collection('users').doc(uid).update(updatedData)
         .then(value=>{ 
-            console.log(value);
             
           dispatch({
             type:USER_UPDATE,

@@ -72,14 +72,6 @@ class CreateTheme extends React.Component {
         timer: 30,
         size: 10,
     };
-    // componentWillMount(){
-    //     console.log(this.props.defaultData);
-    //     if(this.props.defaultData != false){
-    //         console.log(this.props.defaultData);
-            
-    //         // this.setState(this.props.defaultData)
-    //     }
-    // }
     componentWillUnmount() {
         this.setState({
             single: null,
@@ -118,7 +110,6 @@ class CreateTheme extends React.Component {
             size: this.state.size,
             groupsSelected,
         }
-        console.log(res);
 
         if (this.state.name === undefined || this.state.name === '') {
             this.setState({
@@ -135,22 +126,7 @@ class CreateTheme extends React.Component {
         }
 
     }
-    componentDidMount(){
-        console.log('componentDidMount');
-       
-    }
-    componentDidUpdate(){
-        console.log('componentDidUpdate');
-       
-    }
-    componentWillMount(){
-        console.log('componentWillMount');
-        
-    }
-    componentWillReceiveProps(){
-        
-    }
-
+ 
     render() {
         const { classes, theme} = this.props;
         

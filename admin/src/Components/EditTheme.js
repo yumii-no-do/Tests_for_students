@@ -109,7 +109,6 @@ class EditTheme extends React.Component {
             size: this.state.size,
             groupsSelected,
         }
-        console.log(res);
 
         if (this.state.name === undefined || this.state.name === '') {
             this.setState({

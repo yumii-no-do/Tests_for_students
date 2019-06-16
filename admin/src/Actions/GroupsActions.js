@@ -4,7 +4,6 @@ export function getGroups() {
     return dispatch => {
         database.collection('groups').doc('groupList').get()
         .then(list=>{
-            console.log(list.data().list)
             dispatch({
                 type: GET_GROUPS,
                 payload: {list:list.data().list}

@@ -112,7 +112,6 @@ const {errorQuestions,errorName,errorAnswer} = this.state;
                 answers: answers,
                 answer: this.state.answer,
             }
-            console.log(res);
             if ((errorQuestions === false && errorName === false && errorAnswer === false)) {
                 this.props.handelData(res);
                 this.props.handleClose();

@@ -136,7 +136,6 @@ class Settings extends React.Component {
         this.setState({ isOpenCteateTheme: false });
     };
     handelCreateTheme = (object) => {
-        console.log('home', object);
         this.props.createTheme(object.name, [], object.groupsSelected, object.timer, object.size);
         this.props.getThemes();
     };
@@ -147,7 +146,6 @@ class Settings extends React.Component {
         this.setState({ isOpenCreateQuestion: false });
     };
     handelCreateQuestion = (object) => {
-        console.log('home-CreateQuestion', object)
         const obj = this.state.selectTheme;
         obj.questions.push(object);
         this.setState({
@@ -232,7 +230,6 @@ class Settings extends React.Component {
         })
     }
     handleUpdate() {
-        console.log('home-CreateQuestion', this.state.selectQuestion)
         const obj = this.state.selectTheme;
         obj.questions[this.state.selectQuestionId] = this.state.selectQuestion;
         obj.questions[this.state.selectQuestionId].title = this.state.questionTitle;
@@ -326,7 +323,6 @@ class Settings extends React.Component {
         })
     }
     handleThemesDelete = () => {
-        console.log('handleThemesDelete');
 
         this.handleThemesMenuClose();
         let r = window.confirm("Вы точно хотите удалить данную тему?");
@@ -377,7 +373,6 @@ class Settings extends React.Component {
                     questions: reTheme
                 }
             })
-            console.log(reTheme, newThemes);
 
             // this.props.deleteTheme(this.state.selectTheme.id)
         }
@@ -539,7 +534,6 @@ class Settings extends React.Component {
         this.setState({ isOpenEditTheme: false });
     }
     handelEditTheme = (object) => {
-        console.log('home', object);
         // this.props.updateTheme(this.state.selectTheme.id,object);
         this.props.getThemes();
     }
@@ -602,7 +596,6 @@ class Settings extends React.Component {
                                 groups={this.state.groups.list}
                             /> : null
                         } */}
-                        {console.log(this.state.groups)}
                         <CreateQuestion
                             open={this.state.isOpenCreateQuestion}
                             handleClose={this.handleCloseCreateQuestion}
