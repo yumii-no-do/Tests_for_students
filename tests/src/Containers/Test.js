@@ -19,9 +19,7 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import Loading from '../Components/Loading';
 import { setSelectedThemeId } from '../Actions/ThemesActions';
 import moment from 'moment';
-const style = {
 
-}
 moment().format();
 function getRandomArrayElements(arr, count) {
   var shuffled = arr.slice(0), i = arr.length, min = i - count, temp, index;
@@ -123,7 +121,7 @@ class Test extends React.Component {
       })
       let chAnswerList = this.state.answerList;
       this.state.questions.forEach((item,index)=>{
-         if(this.state.answerList[index] == undefined){
+         if(this.state.answerList[index] === undefined){
           chAnswerList[index]='-1'
          }
         })

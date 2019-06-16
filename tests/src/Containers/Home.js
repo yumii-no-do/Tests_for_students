@@ -2,7 +2,7 @@ import React from 'react';
 import { logout, getUser, userVerification } from '../Actions/UserActions';
 import { getUsers } from '../Actions/UsersActions';
 import { connect } from 'react-redux';
-import { Switch, Router, Route, BrowserRouter } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import Profile from './Profile';
 import Header from './Header';
 import Test from './Test';
@@ -17,8 +17,7 @@ class Home extends React.Component {
 
     componentWillMount() {
         
-        const { user, usersLoading, themesLoading, groupsLoading, getUser } = this.props;
-        const loadedAll = usersLoading || user.loading || themesLoading || groupsLoading;
+        const { getUser } = this.props;
         getUser();
 
         this.props.getAllData();

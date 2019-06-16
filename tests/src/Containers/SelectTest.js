@@ -20,7 +20,7 @@ class SelectTest extends React.Component {
         
 
         this.props.getUsers();
-        let groupData, userGroup, groupList, listUsersWithGroup, themesList = null;
+        let  userGroup, groupList, listUsersWithGroup, themesList = null;
         const { user, themes, groups,setThemesList } = this.props;
         userGroup = user.group;
         groupList = groups.list;

@@ -1,5 +1,4 @@
 import React from 'react';
-import { logout, getUser } from '../Actions/UserActions';
 import { connect } from 'react-redux';
 import database from '../Firebase';
 import Card from '@material-ui/core/Card';

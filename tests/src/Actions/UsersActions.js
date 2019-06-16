@@ -1,4 +1,3 @@
-import { auth } from '../Firebase';
 import database from '../Firebase';
 
 

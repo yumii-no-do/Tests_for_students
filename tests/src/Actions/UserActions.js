@@ -1,5 +1,4 @@
 import database, { auth } from '../Firebase';
-import { getUsers } from './UsersActions';
 
 
 export const GET_USER = 'get_user';

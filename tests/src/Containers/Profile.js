@@ -3,14 +3,11 @@ import List from '@material-ui/core/List';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
 import database from '../Firebase';
 import { getUser } from '../Actions/UserActions';
 import { connect } from 'react-redux';
-import Edit from '@material-ui/icons/Edit';
 import Loading from '../Components/Loading';
 
 

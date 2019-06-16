@@ -7,7 +7,6 @@ import AppBar from '@material-ui/core/AppBar';
 import Tooltip from '@material-ui/core/Tooltip';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
-import AutoTable from '../Components/AutoTable';
 import Loading from '../Components/Loading';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
@@ -100,7 +99,7 @@ class Statistic extends React.Component {
         this.setState({ value });
     };
     render() {
-        const { value, listUsersWithGroup, rtData, rtColumns, themeListId, tabs } = this.state;
+        const { value, listUsersWithGroup, themeListId, tabs } = this.state;
 
         return (
             this.state.loading
